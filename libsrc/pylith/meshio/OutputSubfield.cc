@@ -122,16 +122,20 @@ pylith::meshio::OutputSubfield::OutputSubfield(const pylith::topology::FieldBase
     _filteredDM(NULL),
     _filteredVector(NULL) {
     PetscErrorCode err;
-    err = DMGetGlobalVector(_dm, &_vector);PYLITH_CHECK_ERROR(err);
+
+    const char* const name = description.label.c_str();
+    err = DMCreateGlobalVector(_dm, &_vector);PYLITH_CHECK_ERROR(err);
+    err = PetscObjectSetName((PetscObject) _vector, name);PYLITH_CHECK_ERROR(err);
     if (_filter) {
         _filteredDM = _filter->createDM(_dm, description, discretization);
-    } // if
+        err = PetscObjectSetName((PetscObject) _filteredDM, name);PYLITH_CHECK_ERROR(err);
+    } else {
+        _filteredDM = _dm;
+        err = PetscObjectReference((PetscObject)_dm);PYLITH_CHECK_ERROR(err);
+    } // if/else
 
     if (_filteredDM != _dm) {
-        err = DMGetGlobalVector(_filteredDM, &_filteredVector);PYLITH_CHECK_ERROR(err);
-
-        const char* const name = description.label.c_str();
-        err = PetscObjectSetName((PetscObject) _filteredDM, name);PYLITH_CHECK_ERROR(err);
+        err = DMCreateGlobalVector(_filteredDM, &_filteredVector);PYLITH_CHECK_ERROR(err);
         err = PetscObjectSetName((PetscObject) _filteredVector, name);PYLITH_CHECK_ERROR(err);
     } else {
         _filteredVector = _vector;

@@ -513,6 +513,7 @@ pylith::topology::Field::scatterLocalToVector(const PetscVec vector,
 
     PetscErrorCode err;
     if (_dm) {
+        assert(_localVec);
         err = DMLocalToGlobalBegin(_dm, _localVec, mode, vector);PYLITH_CHECK_ERROR(err);
         err = DMLocalToGlobalEnd(_dm, _localVec, mode, vector);PYLITH_CHECK_ERROR(err);
     } // if
@@ -532,6 +533,7 @@ pylith::topology::Field::scatterVectorToLocal(const PetscVec vector,
 
     PetscErrorCode err;
     if (_dm) {
+        assert(_localVec);
         err = DMGlobalToLocalBegin(_dm, vector, mode, _localVec);PYLITH_CHECK_ERROR(err);
         err = DMGlobalToLocalEnd(_dm, vector, mode, _localVec);PYLITH_CHECK_ERROR(err);
     } // if

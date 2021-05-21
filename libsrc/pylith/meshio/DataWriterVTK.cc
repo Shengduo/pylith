@@ -230,18 +230,13 @@ void
 pylith::meshio::DataWriterVTK::writeVertexField(const PylithScalar t,
                                                 const pylith::meshio::OutputSubfield& subfield) {
     PYLITH_METHOD_BEGIN;
-
-    assert(_dm && _dm == subfield.getDM());
     assert(_isOpen && _isOpenTimeStep);
 
-    // :KLUDGE: MATT You have a note that this is not fully implemented!
-    //
-    // Will change to just VecView() once I setup the vectors correctly
-    // (use VecSetOperation() to change the view method).
+    PetscErrorCode err;
     PetscViewerVTKFieldType ft = subfield.getDescription().vectorFieldType == pylith::topology::FieldBase::VECTOR ?
                                  PETSC_VTK_POINT_VECTOR_FIELD : PETSC_VTK_POINT_FIELD;
-    PetscErrorCode err = PetscViewerVTKAddField(_viewer, (PetscObject) _dm, DMPlexVTKWriteAll, PETSC_DEFAULT, ft,
-                                                PETSC_TRUE, (PetscObject) subfield.getVector());PYLITH_CHECK_ERROR(err);
+    err = PetscViewerVTKAddField(_viewer, (PetscObject)_dm, DMPlexVTKWriteAll, PETSC_DEFAULT, ft,
+                                 PETSC_TRUE, (PetscObject)subfield.getVector());PYLITH_CHECK_ERROR(err);
     err = PetscObjectReference((PetscObject) subfield.getVector());PYLITH_CHECK_ERROR(err); // Viewer destroys Vec
 
     _wroteVertexHeader = true;
@@ -257,13 +252,13 @@ pylith::meshio::DataWriterVTK::writeCellField(const PylithScalar t,
                                               const pylith::meshio::OutputSubfield& subfield) {
     PYLITH_METHOD_BEGIN;
 
-    assert(_dm && _dm == subfield.getDM());
     assert(_isOpen && _isOpenTimeStep);
 
+    PetscErrorCode err;
     PetscViewerVTKFieldType ft = subfield.getDescription().vectorFieldType == pylith::topology::FieldBase::VECTOR ?
                                  PETSC_VTK_CELL_VECTOR_FIELD : PETSC_VTK_CELL_FIELD;
-    PetscErrorCode err = PetscViewerVTKAddField(_viewer, (PetscObject) _dm, DMPlexVTKWriteAll, PETSC_DEFAULT, ft,
-                                                PETSC_TRUE, (PetscObject) subfield.getVector());PYLITH_CHECK_ERROR(err);
+    err = PetscViewerVTKAddField(_viewer, (PetscObject)_dm, DMPlexVTKWriteAll, PETSC_DEFAULT, ft,
+                                 PETSC_TRUE, (PetscObject)subfield.getVector());PYLITH_CHECK_ERROR(err);
     err = PetscObjectReference((PetscObject) subfield.getVector());PYLITH_CHECK_ERROR(err); // Viewer destroys Vec
 
     _wroteCellHeader = true;
