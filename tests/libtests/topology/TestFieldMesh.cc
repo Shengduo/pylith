@@ -217,7 +217,6 @@ pylith::topology::TestFieldMesh::testVectorAccessors(void) {
     err = VecGetSize(localVec, &size);CPPUNIT_ASSERT(!err);
     CPPUNIT_ASSERT_EQUAL(ndof, size);
 
-#if 0
     _field->createGlobalVector();
     const PetscVec& globalVec = _field->globalVector();CPPUNIT_ASSERT(globalVec);
     _field->scatterLocalToVector(globalVec);
@@ -225,7 +224,6 @@ pylith::topology::TestFieldMesh::testVectorAccessors(void) {
     CPPUNIT_ASSERT_EQUAL(std::string(_field->getLabel()), std::string(name));
     err = VecGetSize(globalVec, &size);CPPUNIT_ASSERT(!err);
     CPPUNIT_ASSERT_EQUAL(ndof - ndofConstrained, size);
-#endif
 
     _field->createOutputVector();
     _field->scatterLocalToOutput();
@@ -400,6 +398,7 @@ pylith::topology::TestFieldMesh::_initialize(void) {
     _field->subfieldAdd(_data->descriptionA, _data->discretizationA);
     _field->subfieldAdd(_data->descriptionB, _data->discretizationB);
     _field->subfieldsSetup();
+    _field->createDiscretization();
 
     PetscDMLabel labelA = NULL, labelB = NULL;
     err = DMGetLabel(_field->dmMesh(), _data->bcALabel, &labelA);CPPUNIT_ASSERT(!err);
