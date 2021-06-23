@@ -13,7 +13,7 @@
 #
 # ----------------------------------------------------------------------
 #
-# @file pylith/faults/FaultCohesivePoroKin.py
+# @file pylith/faults/FaultPoroCohesiveKin.py
 #
 # @brief Python object for a fault surface with kinematic
 # (prescribed) slip implemented with cohesive elements.
@@ -21,7 +21,7 @@
 # Factory: fault
 
 from .FaultCohesive import FaultCohesive
-from .faults import FaultCohesivePoroKin as ModuleFaultCohesivePoroKin
+from .faults import FaultPoroCohesiveKin as ModuleFaultPoroCohesiveKin
 
 # ITEM FACTORIES ///////////////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ def eqsrcFactory(name):
     return facility(name, family="eq_kinematic_src", factory=KinSrcStep)
 
 
-class FaultCohesivePoroKin(FaultCohesive, ModuleFaultCohesivePoroKin):
+class FaultPoroCohesiveKin(FaultCohesive, ModuleFaultPoroCohesiveKin):
     """Python object for a fault surface with kinematic (prescribed) slip
     implemented with cohesive elements.
 
@@ -54,7 +54,7 @@ class FaultCohesivePoroKin(FaultCohesive, ModuleFaultCohesivePoroKin):
     #outputManager = pythia.pyre.inventory.facility("output", family="output_manager", factory=OutputFaultKin)
     #output.meta['tip'] = "Output manager associated with fault information."
 
-    def __init__(self, name="faultcohesiveporokin"):
+    def __init__(self, name="faultporocohesivekin"):
         """Initialize configuration.
         """
         FaultCohesive.__init__(self, name)
@@ -72,7 +72,7 @@ class FaultCohesivePoroKin(FaultCohesive, ModuleFaultCohesivePoroKin):
 
         for eqsrc in self.eqRuptures.components():
             eqsrc.preinitialize()
-        ModuleFaultCohesivePoroKin.setEqRuptures(
+        ModuleFaultPoroCohesiveKin.setEqRuptures(
             self, self.eqRuptures.inventory.facilityNames(), self.eqRuptures.components())
 
         return
@@ -81,7 +81,7 @@ class FaultCohesivePoroKin(FaultCohesive, ModuleFaultCohesivePoroKin):
         """Verify compatibility of configuration.
         """
         FaultCohesive.verifyConfiguration(self)
-        ModuleFaultCohesivePoroKin.verifyConfiguration(self, self.mesh())
+        ModuleFaultPoroCohesiveKin.verifyConfiguration(self, self.mesh())
 
         for eqsrc in self.eqRuptures.components():
             eqsrc.verifyConfiguration()
@@ -105,18 +105,18 @@ class FaultCohesivePoroKin(FaultCohesive, ModuleFaultCohesivePoroKin):
         return
 
     def _createModuleObj(self):
-        """Create handle to C++ FaultCohesivePoroKin.
+        """Create handle to C++ FaultPoroCohesiveKin.
         """
-        ModuleFaultCohesivePoroKin.__init__(self)
+        ModuleFaultPoroCohesiveKin.__init__(self)
         return
 
 
 # Factories
 
 def fault():
-    """Factory associated with FaultCohesivePoroKin.
+    """Factory associated with FaultPoroCohesiveKin.
     """
-    return FaultCohesivePoroKin()
+    return FaultPoroCohesiveKin()
 
 
 # End of file
