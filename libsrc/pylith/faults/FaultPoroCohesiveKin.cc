@@ -166,7 +166,7 @@ pylith::faults::FaultPoroCohesiveKin::verifyConfiguration(const pylith::topology
         throw std::runtime_error(msg.str());
     } // if
 
-    /** TO DO
+    /** TO DO **
      * Implement or verify field::hasSubfield("pressure", "trace_strain", "fault_pressure") is implemented
      */
     if (!solution.hasSubfield("pressure")) {
@@ -233,7 +233,7 @@ pylith::faults::FaultPoroCohesiveKin::createIntegrator(const pylith::topology::F
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Create constraint for buried fault edges and faces.
-// ** To Do **
+// ** TO DO **
 // Check if new constraint needed for poro-fault
 pylith::feassemble::Constraint*
 pylith::faults::FaultPoroCohesiveKin::createConstraint(const pylith::topology::Field& solution) {

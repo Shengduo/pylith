@@ -41,7 +41,7 @@
  * - 2: fault_skempton_coefficient[B](1)
  * - 3: solid_undrained_bulk_modulus(1)
  * - 4: solid_shear_modulus(1)
- * - numA - 1: slip(dim)
+ * - numA - 1: slip(dim) OR slip_rate (dim)
  *
  * ======================================================================
  */
