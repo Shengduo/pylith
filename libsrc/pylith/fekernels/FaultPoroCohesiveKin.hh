@@ -47,8 +47,8 @@
  * ======================================================================
  */
 
-#if !defined(pylith_fekernels_faultcohesiveporokin_hh)
-#define pylith_fekernels_faultcohesiveporokin_hh
+#if !defined(pylith_fekernels_faultporocohesivekin_hh)
+#define pylith_fekernels_faultporocohesivekin_hh
 
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations
