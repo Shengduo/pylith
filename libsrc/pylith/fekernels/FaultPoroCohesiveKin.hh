@@ -83,7 +83,7 @@ public:
 
     /** f0 function for poroelasticity equation: f0u = -\lambda (pos side), +\lambda (neg side).
      *
-     * Solution fields: [disp(dim), ..., lagrange(dim)]
+     * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
      */
     static void f0u(const PylithInt dim,
                     const PylithInt numS,
@@ -181,28 +181,28 @@ public:
                           const PylithScalar constants[],
                           PylithScalar f0[])
 
-        /** Jf0 function for displacement equation: +\lambda (pos side), -\lambda (neg side).
+    /** Jf0 function for displacement equation: +\lambda (pos side), -\lambda (neg side).
      */
-        static void Jf0ul(const PylithInt dim,
-                          const PylithInt numS,
-                          const PylithInt numA,
-                          const PylithInt sOff[],
-                          const PylithInt sOff_x[],
-                          const PylithScalar s[],
-                          const PylithScalar s_t[],
-                          const PylithScalar s_x[],
-                          const PylithInt aOff[],
-                          const PylithInt aOff_x[],
-                          const PylithScalar a[],
-                          const PylithScalar a_t[],
-                          const PylithScalar a_x[],
-                          const PylithReal t,
-                          const PylithReal s_tshift,
-                          const PylithScalar x[],
-                          const PylithReal n[],
-                          const PylithInt numConstants,
-                          const PylithScalar constants[],
-                          PylithScalar Jf0[]);
+    static void Jf0ul(const PylithInt dim,
+                      const PylithInt numS,
+                      const PylithInt numA,
+                      const PylithInt sOff[],
+                      const PylithInt sOff_x[],
+                      const PylithScalar s[],
+                      const PylithScalar s_t[],
+                      const PylithScalar s_x[],
+                      const PylithInt aOff[],
+                      const PylithInt aOff_x[],
+                      const PylithScalar a[],
+                      const PylithScalar a_t[],
+                      const PylithScalar a_x[],
+                      const PylithReal t,
+                      const PylithReal s_tshift,
+                      const PylithScalar x[],
+                      const PylithReal n[],
+                      const PylithInt numConstants,
+                      const PylithScalar constants[],
+                      PylithScalar Jf0[]);
 
     /** Jf0 function for p' p': 1.
      *
