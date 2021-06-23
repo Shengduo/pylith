@@ -137,7 +137,7 @@ public:
                                               PylithScalar tanDir1[],
                                               PylithScalar tanDir2[]);
 
-        }; // _FaultCohesivePoroKin
+        }; // _FaultPoroCohesiveKin
     } // fekernels
 } // pylith
 
@@ -195,15 +195,20 @@ pylith::fekernels::_FaultPoroCohesiveKin::lagrange_sOff(const PylithInt sOff[],
 } // lagrange_sOff
 
 
+// ----------------------------------------------------------------------
 // Get offset in s where pressure_fault subfield starts.
+// Seems that the offset contributed by Lagrange multiplier does not need *2 
+// ** NEEDS VERFICATION **
 PylithInt
 pylith::fekernels::_FaultPoroCohesiveKin::fault_pressure_sOff(const PylithInt sOff[],
                                                               const PylithInt numS) {
     PylithInt off = 0;
-    const PylithInt numCount = numS - 1; // [..., fault_pressure]
+    const PylithInt numCount = numS - 2; // [..., Lagrange multiplier, fault_pressure]
     for (PylithInt i = 0; i < numCount; ++i) {
         off += 2 * (sOff[i + 1] - sOff[i]);
     } // for
+
+    off += (sOff[numS - 1] - sOff[numS - 2]; 
     return off;
 } // fault_pressure_sOff
 
