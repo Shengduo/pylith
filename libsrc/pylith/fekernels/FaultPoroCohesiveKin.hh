@@ -22,9 +22,9 @@
  *
  * Solution fields: [disp(dim), vel(dim, optional), pressure(1), trace_strain(1), lagrange(dim), fault_pressure(1)]
  *
- * Auxiliary fields: [fault_undrained_bulk_modulus, 
- *                    fault_shear_modulus, 
- *                    fault_skempton_coefficient (B), 
+ * Auxiliary fields: [fault_undrained_bulk_modulus,
+ *                    fault_shear_modulus,
+ *                    fault_skempton_coefficient (B),
  *                    solid_undrained_bulk_modulus,
  *                    solid_shear_modulus,
  *                    slip]                   (**NEED IMPLEMENTATION**)
@@ -47,18 +47,18 @@
  * ======================================================================
  */
 
-#if !defined(pylith_fekernels_faultporocohesivekin_hh)
-#define pylith_fekernels_faultporocohesivekin_hh
+#if !defined(pylith_fekernels_faultcohesiveporokin_hh)
+#define pylith_fekernels_faultcohesiveporokin_hh
 
 // Include directives ---------------------------------------------------
 #include "fekernelsfwd.hh" // forward declarations
 
 #include "pylith/utils/types.hh"
 
-class pylith::fekernels::FaultPoroCohesiveKin
-{
+class pylith::fekernels::FaultPoroCohesiveKin {
     // PUBLIC MEMBERS ///////////////////////////////////////////////////////
 public:
+
     /** Kernel interface.
      *
      * @param[in] dim Spatial dimension.
@@ -153,12 +153,12 @@ public:
                       const PylithScalar constants[],
                       PylithScalar f0[]);
 
-    /** f0 function for fault pressure constraint equation 
+    /** f0 function for fault pressure constraint equation
      *  f0p_fault = p' - B'K'_u / M_u'
-     *  * [G' M_u / (G K_u) * 3K_u(trace_strain^- + trace_strain^-) / 2 + 
-     *  (G - G') / G * ((K_u - 2G/3) * (trace_strain^- + trace_strain^-) 
+     *  * [G' M_u / (G K_u) * 3K_u(trace_strain^- + trace_strain^-) / 2 +
+     *  (G - G') / G * ((K_u - 2G/3) * (trace_strain^- + trace_strain^-)
      *  + 2G (u3,3^- + u3,3^+))/2]
-     * 
+     *
      *  Solution fields: [disp(dim), vel(dim), ..., lagrange(dim), fault_pressure(1)]
      */
     static void f0p_fault(const PylithInt dim,
@@ -179,7 +179,7 @@ public:
                           const PylithReal n[],
                           const PylithInt numConstants,
                           const PylithScalar constants[],
-                          PylithScalar f0[])
+                          PylithScalar f0[]);
 
     /** Jf0 function for displacement equation: +\lambda (pos side), -\lambda (neg side).
      */
@@ -254,11 +254,10 @@ public:
                         const PylithScalar constants[],
                         PylithScalar Jf0[]);
 
-
     /** Jf1 function for fault pressure - u.
      *
      * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
-     */ 
+     */
     static void Jf1p_fu(const PylithInt dim,
                         const PylithInt numS,
                         const PylithInt numA,
@@ -278,7 +277,7 @@ public:
                         const PylithReal n[],
                         const PylithInt numConstants,
                         const PylithScalar constants[],
-                        PylithScalar Jf1[])
+                        PylithScalar Jf1[]);
 
     /** Jf0 function for slip constraint equation: +\lambda (pos side), -\lambda (neg side).
      *
