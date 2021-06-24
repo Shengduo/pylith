@@ -168,6 +168,7 @@ pylith::faults::FaultPoroCohesiveKin::verifyConfiguration(const pylith::topology
 
     /** TO DO **
      * Implement or verify field::hasSubfield("pressure", "trace_strain", "fault_pressure") is implemented
+     * Seems that this is fine, at least no need to change the function field::hasSubfield
      */
     if (!solution.hasSubfield("pressure")) {
         std::ostringstream msg;
