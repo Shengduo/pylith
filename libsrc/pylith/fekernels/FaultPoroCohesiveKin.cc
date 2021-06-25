@@ -745,16 +745,17 @@ pylith::fekernels::FaultPoroCohesiveKin::Jf1p_fu(const PylithInt dim,
     const PylithInt gOffN = 0;
     const PylithInt gOffP = gOffN + spaceDim;
     const PylithInt ncols = spaceDim;
+    const PylithScalar temp = - faultSkemptonCoef *
+                              faultUndrainedBulkModulus *
+                              (shearModulus - faultShearModulus) /
+                              M_u_prime
 
-    Jf1[(gOffN + spaceDim - 1) * ncols + spaceDim - 1] += -faultSkemptonCoef *
-                                                          faultUndrainedBulkModulus *
-                                                          (shearModulus - faultShearModulus) /
-                                                          M_u_prime;
-
-    Jf1[(gOffP + spaceDim - 1) * ncols + spaceDim - 1] += -faultSkemptonCoef *
-                                                          faultUndrainedBulkModulus *
-                                                          (shearModulus - faultShearModulus) /
-                                                          M_u_prime;
+    for (PylithInt i = 0; i < spaceDim; ++i) {
+        for (PylithInt j = 0; j < spaceDim; ++j) {
+            Jf1[(gOffN + i) * ncols + j] += temp * n[i] * n[j];
+            Jf1[(gOffP + i) * ncols + j] += temp * n[i] * n[j]; 
+        }
+    }
 
 } // Jf1p_fu
 
