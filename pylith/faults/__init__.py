@@ -21,6 +21,7 @@ __all__ = [
     "FaultCohesive",
     "FaultCohesiveKin",
     "FaultPoroCohesiveKin",
+    "FaultPoroDiffusionCohesiveKin", 
     "KinSrc",
     "KinSrcConstRate",
     "KinSrcStep",
