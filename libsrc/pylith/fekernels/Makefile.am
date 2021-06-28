@@ -36,6 +36,7 @@ subpkginclude_HEADERS = \
 	AbsorbingDampers.hh \
 	FaultCohesiveKin.hh \
 	FaultPoroCohesiveKin.hh \
+	FaultPoroDiffusionCohesiveKin.hh \
 	IsotropicLinearPoroelasticity.hh \
 	Poroelasticity.hh
 
