@@ -459,7 +459,7 @@ pylith::fekernels::FaultPoroCohesiveKin::f0p_fault(const PylithInt dim,
     const PylithScalar M_u = undrainedBulkModulus + 4. * shearModulus / 3.;
     const PylithScalar M_u_prime = faultUndrainedBulkModulus + 4. * faultShearModulus / 3.;
 
-    f0[0] = faultPressure - faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
+    f0[fOffp_fault] += faultPressure - faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
             (faultShearModulus * M_u / shearModulus * (traceStrainN + traceStrainP) * 3. / 2. + (shearModulus - faultShearModulus) / shearModulus * (stress_nnN + stress_nnP) / 2.);
 
 } // f0p_fault
