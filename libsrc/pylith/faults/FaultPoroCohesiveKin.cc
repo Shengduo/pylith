@@ -690,9 +690,9 @@ pylith::faults::_FaultPoroCohesiveKin::setKernelsLHSJacobian(pylith::feassemble:
     const PetscBdPointJac Jf3p_fu  = NULL; 
 
     const PetscBdPointJac Jf0lu = pylith::fekernels::FaultPoroCohesiveKin::Jf0lu;
-    const PetscBdPointJac Jf1ul = NULL;
-    const PetscBdPointJac Jf2ul = NULL;
-    const PetscBdPointJac Jf3ul = NULL;
+    const PetscBdPointJac Jf1lu = NULL;
+    const PetscBdPointJac Jf2lu = NULL;
+    const PetscBdPointJac Jf3lu = NULL;
 
     const char* nameDispVel = NULL;
     const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
