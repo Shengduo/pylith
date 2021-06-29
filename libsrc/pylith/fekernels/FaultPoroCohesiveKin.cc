@@ -459,8 +459,8 @@ pylith::fekernels::FaultPoroCohesiveKin::f0p_fault(const PylithInt dim,
     const PylithScalar M_u = undrainedBulkModulus + 4. * shearModulus / 3.;
     const PylithScalar M_u_prime = faultUndrainedBulkModulus + 4. * faultShearModulus / 3.;
 
-    f0[0] = faultPressure - faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
-            (faultShearModulus * M_u / shearModulus * (traceStrainN + traceStrainP) * 3. / 2. + (shearModulus - faultShearModulus) / shearModulus * (stress_nnN + stress_nnP) / 2.);
+    f0[fOffp_fault] += faultPressure - faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
+                       (faultShearModulus * M_u / shearModulus * (traceStrainN + traceStrainP) * 3. / 2. + (shearModulus - faultShearModulus) / shearModulus * (stress_nnN + stress_nnP) / 2.);
 
 } // f0p_fault
 
@@ -676,12 +676,14 @@ pylith::fekernels::FaultPoroCohesiveKin::Jf0p_fe(const PylithInt dim,
     // Constants M_u and M_u' for f0o_fault
     const PylithScalar M_u = undrainedBulkModulus + 4. * shearModulus / 3.;
     const PylithScalar M_u_prime = faultUndrainedBulkModulus + 4. * faultShearModulus / 3.;
+    const PylithInt gOffN = 0;
+    const PylithInt gOffP = gOffP + 1;
 
-    Jf0[0] += -faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
+    Jf0[gOffN] += -faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
               (faultShearModulus * M_u * 3. / 2. / shearModulus + (shearModulus - faultShearModulus) / shearModulus *
                (undrainedBulkModulus - 2. * shearModulus / 3.) / 2.);
 
-    Jf0[1] += -faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
+    Jf0[gOffP] += -faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
               (faultShearModulus * M_u * 3. / 2. / shearModulus + (shearModulus - faultShearModulus) / shearModulus *
                (undrainedBulkModulus - 2. * shearModulus / 3.) / 2.);
 
@@ -745,16 +747,17 @@ pylith::fekernels::FaultPoroCohesiveKin::Jf1p_fu(const PylithInt dim,
     const PylithInt gOffN = 0;
     const PylithInt gOffP = gOffN + spaceDim;
     const PylithInt ncols = spaceDim;
+    const PylithScalar temp = - faultSkemptonCoef *
+                              faultUndrainedBulkModulus *
+                              (shearModulus - faultShearModulus) /
+                              M_u_prime
 
-    Jf1[(gOffN + spaceDim - 1) * ncols + spaceDim - 1] += -faultSkemptonCoef *
-                                                          faultUndrainedBulkModulus *
-                                                          (shearModulus - faultShearModulus) /
-                                                          M_u_prime;
-
-    Jf1[(gOffP + spaceDim - 1) * ncols + spaceDim - 1] += -faultSkemptonCoef *
-                                                          faultUndrainedBulkModulus *
-                                                          (shearModulus - faultShearModulus) /
-                                                          M_u_prime;
+    for (PylithInt i = 0; i < spaceDim; ++i) {
+        for (PylithInt j = 0; j < spaceDim; ++j) {
+            Jf1[(gOffN + i) * ncols + j] += temp * n[i] * n[j];
+            Jf1[(gOffP + i) * ncols + j] += temp * n[i] * n[j]; 
+        }
+    }
 
 } // Jf1p_fu
 

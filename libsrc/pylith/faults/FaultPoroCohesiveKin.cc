@@ -168,6 +168,7 @@ pylith::faults::FaultPoroCohesiveKin::verifyConfiguration(const pylith::topology
 
     /** TO DO **
      * Implement or verify field::hasSubfield("pressure", "trace_strain", "fault_pressure") is implemented
+     * Seems that this is fine, at least no need to change the function field::hasSubfield
      */
     if (!solution.hasSubfield("pressure")) {
         std::ostringstream msg;
@@ -689,9 +690,9 @@ pylith::faults::_FaultPoroCohesiveKin::setKernelsLHSJacobian(pylith::feassemble:
     const PetscBdPointJac Jf3p_fu  = NULL; 
 
     const PetscBdPointJac Jf0lu = pylith::fekernels::FaultPoroCohesiveKin::Jf0lu;
-    const PetscBdPointJac Jf1ul = NULL;
-    const PetscBdPointJac Jf2ul = NULL;
-    const PetscBdPointJac Jf3ul = NULL;
+    const PetscBdPointJac Jf1lu = NULL;
+    const PetscBdPointJac Jf2lu = NULL;
+    const PetscBdPointJac Jf3lu = NULL;
 
     const char* nameDispVel = NULL;
     const char* nameLagrangeMultiplier = "lagrange_multiplier_fault";
