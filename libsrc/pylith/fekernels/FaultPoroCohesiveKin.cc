@@ -455,7 +455,7 @@ pylith::fekernels::FaultPoroCohesiveKin::f0p_fault(const PylithInt dim,
     const PylithScalar stress_nnN = (undrainedBulkModulus - 2. * shearModulus / 3.) * traceStrainN + 2. * shearModulus * strain_nnN;
     const PylithScalar stress_nnP = (undrainedBulkModulus - 2. * shearModulus / 3.) * traceStrainP + 2. * shearModulus * strain_nnP;
 
-    // Constants M_u and M_u' for f0o_fault
+    // Constants M_u and M_u' for f0p_fault
     const PylithScalar M_u = undrainedBulkModulus + 4. * shearModulus / 3.;
     const PylithScalar M_u_prime = faultUndrainedBulkModulus + 4. * faultShearModulus / 3.;
 
