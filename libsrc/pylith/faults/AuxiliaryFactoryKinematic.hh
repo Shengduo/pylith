@@ -65,7 +65,7 @@ public:
     /// Add skempton coefficient to auxiliary field.
     void addSkemptonCoefficient(void);
     /// Add functions for FaultPoroDiffusionCohesivekin
-    
+
     /// Add layer thickness to auxiliary field.
     void addThickness(void);
 
@@ -98,6 +98,15 @@ public:
 
     /// Add positive side shear modulus to auxiliary field.
     void addShearModulusPositive(void);
+
+    /// Add body force subfield to auxiliary fields.
+    void addBodyForce(void);
+
+    /// Add reference source subfield to auxiliary fields.
+    void addSource(void);
+
+    /// Add constant pressure sourcesubfield to auxiliary fields.
+    void addConstantPressureSource(void);
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:

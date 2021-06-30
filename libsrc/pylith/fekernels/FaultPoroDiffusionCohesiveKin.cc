@@ -344,6 +344,60 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p(const PylithInt dim,
     const PylithInt i_thickness = 0;
     const PylithInt i_permeability_normal = 5;
     const PylithInt i_fluid_viscosity = 6;
+    const PylithInt sOffPressureN = _FaultPoroDiffusionCohesiveKin::pressure_sOff(sOff, numS);
+    const PylithInt sOffPressureP = sOffPressureN + 1;
+    const PylithInt sOffPressureFault = _FaultPoroDiffusionCohesiveKin::fault_pressure_sOff(sOff, numS);
+    const PylithInt fOffN = 0;
+    const PylithInt fOffP = fOffN + 1;
+
+    const PylithScalar thickness = a[aOff[i_thickness]];
+    const PylithScalar permeabilityNormal = a[aOff[i_permeability_normal]];
+    const PylithScalar fluidViscosity = a[aOff[i_fluid_viscosity]];
+    const PylithScalar pressureN = s[sOffPressureN];
+    const PylithScalar pressureP = s[sOffPressureP];
+    const PylithScalar pressureFault = s[sOffPressureFault];
+
+    f0[fOffN] += permeabilityNormal / fluidViscosity *
+                 ((pressureN - pressureFault) / thickness);
+    f0[fOffP] += permeabilityNormal / fluidViscosity *
+                 ((pressureP - pressureFault) / thickness);
+} // f0p
+
+// ----------------------------------------------------------------------
+// f0 function for bulk pressure: f0p = [\kappa_{cz} / \mu * ((p^+ - p^f)/h - n \cdot f_f),
+//                                       \kappa_{cz} / \mu * ((p^- - p^f)/h + n \cdot f_f)]
+void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_body(const PylithInt dim,
+                                                           const PylithInt numS,
+                                                           const PylithInt numA,
+                                                           const PylithInt sOff[],
+                                                           const PylithInt sOff_x[],
+                                                           const PylithScalar s[],
+                                                           const PylithScalar s_t[],
+                                                           const PylithScalar s_x[],
+                                                           const PylithInt aOff[],
+                                                           const PylithInt aOff_x[],
+                                                           const PylithScalar a[],
+                                                           const PylithScalar a_t[],
+                                                           const PylithScalar a_x[],
+                                                           const PylithReal t,
+                                                           const PylithScalar x[],
+                                                           const PylithReal n[],
+                                                           const PylithInt numConstants,
+                                                           const PylithScalar constants[],
+                                                           PylithScalar f0[])
+{
+    assert(sOff);
+    assert(s);
+    assert(f0);
+
+    assert(numS >= 5);
+    assert(a);
+    assert(numA >= 10);
+
+    const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+    const PylithInt i_thickness = 0;
+    const PylithInt i_permeability_normal = 5;
+    const PylithInt i_fluid_viscosity = 6;
     const PylithInt i_body_force = numA - 3;
     const PylithInt sOffPressureN = _FaultPoroDiffusionCohesiveKin::pressure_sOff(sOff, numS);
     const PylithInt sOffPressureP = sOffPressureN + 1;
@@ -369,7 +423,7 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p(const PylithInt dim,
                  ((pressureN - pressureFault) / thickness + nDotBodyForce);
     f0[fOffP] += permeabilityNormal / fluidViscosity *
                  ((pressureP - pressureFault) / thickness - nDotBodyForce);
-} // f0p
+} // f0p_body
 
 // ----------------------------------------------------------------------
 // f0 function for slip constraint equation: f0\lambda = (u^+ - u^-) - d
@@ -579,6 +633,385 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault(const PylithInt
     const PylithInt i_shear_modulus_negative = 8;
     const PylithInt i_bulk_modulus_positive = 9;
     const PylithInt i_shear_modulus_positive = 10;
+
+    const PylithScalar thickness = a[aOff[i_thickness]];
+    const PylithScalar porosity = a[aOff[i_porosity]];
+    const PylithScalar betaP = a[aOff[i_beta_p]];
+    const PylithScalar betaSigma = a[aOff[i_beta_sigma]];
+    const PylithScalar permeabilityTangential = a[aOff[i_permeabilility_tangential]];
+    const PylithScalar permeabilityNormal = a[aOff[i_permeabilility_normal]];
+    const PylithScalar fluidViscosity = a[aOff[i_fluid_viscosity]];
+
+    // Pressure and pressure_t
+    const PylithInt sOffpressureN = _FaultPoroDiffusionCohesiveKin::pressure_sOff(sOff, numS);
+    const PylithInt sOffpressureP = sOffpressureN + 1;
+    const PylithInt sOffpressureFault = _FaultPoroDiffusionCohesiveKin::fault_pressure_sOff(sOff, numS);
+
+    const PylithScalar pressureN = s[sOffpressureN];
+    const PylithScalar pressureP = s[sOffpressureP];
+    const PylithScalar pressureFault = s[sOffpressureFault];
+    const PylithScalar pressureN_t = s_t[sOffpressureN];
+    const PylithScalar pressureP_t = s_t[sOffpressureP];
+    const PylithScalar pressureFault_t = s_t[sOffpressureFault];
+
+    // ** TO DO **
+    // Pull out drained bulk modulus and shear modulus from the surrounding bulks
+    const PylithScalar bulkModulusN = a[aOff[i_bulk_modulus_negative]];
+    const PylithScalar bulkModulusP = a[aOff[i_bulk_modulus_positive]];
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
+
+    // Strain components
+    const PylithInt sOffDispN_x = sOff_x[i_disp_x];
+    const PylithInt sOffDispP_x = sOffDispN_x + spaceDim ^ 2;
+    const PylithInt fOffp_fault = 0;
+
+    const PylithScalar *dispN_x = &s_x[sOffDispN_x];
+    const PylithScalar *dispP_x = &s_x[sOffDispP_x];
+
+    // Trace_strain, no transformation required
+
+    const PylithInt sOffTraceStrainN = _FaultPoroDiffusionCohesiveKin::trace_strain_sOff(sOff, numS);
+    const PylithInt sOffTraceStrainP = sOffTraceStrainN + 1;
+    const PylithScalar traceStrainN = s[sOffTraceStrainN];
+    const PylithScalar traceStrainP = s[sOffTraceStrainP];
+
+    // \sigma_nn, requires transformation
+    // \sigma_nn = (K_u - 2G/3) \epsilon_v + 2G strain_nn
+    // strain_nn = n_i u_{i,j} n_j
+    PylithScalar strain_nnN = 0.;
+    PylithScalar strain_nnP = 0.;
+    for (PylithInt i = 0; i < spaceDim; ++i)
+    {
+        for (PylithInt j = 0; j < spaceDim; ++j)
+        {
+            strain_nnN += n[i] * dispN_x[i * spaceDim + j] * n[j];
+            strain_nnP += n[i] * dispP_x[i * spaceDim + j] * n[j];
+        }
+    }
+
+    const PylithScalar stress_nnN = (bulkModulusN - 2. * shearModulusN / 3.) * traceStrainN + 2. * shearModulusN * strain_nnN;
+    const PylithScalar stress_nnP = (bulkModulusP - 2. * shearModulusP / 3.) * traceStrainP + 2. * shearModulusP * strain_nnP;
+
+    f0[fOffp_fault] += porosity * (betaP * (pressureN_t + 2. * pressureFault_t + pressureP_t) / 4. +
+                                   betaSigma * (stress_nnN + stress_nnP) / 2.) +
+                           permeabilityTangential / fluidViscosity - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / (thickness*thickness);
+
+} // f0p_fault
+
+// ----------------------------------------------------------------------
+// f0 function for p_fault constraint equation:
+// f0p_fault = porosity * (\beta^p * (\dot{p}^+ + 2 \dot{p}^f + \dot{p}^-)/4
+//                         + \beta^\sigma * (\dot{\sigma}^+_{nn} + \dot{\sigma}^-_{nn}))
+//             + \kappa_{fx} / \mu * \vnabla(2D) \cdot body_force
+//             - \kappa_{fz} / \mu * (p^+ - 2p_f + p^-) / h^2 - source
+void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body(const PylithInt dim,
+                                                                 const PylithInt numS,
+                                                                 const PylithInt numA,
+                                                                 const PylithInt sOff[],
+                                                                 const PylithInt sOff_x[],
+                                                                 const PylithScalar s[],
+                                                                 const PylithScalar s_t[],
+                                                                 const PylithScalar s_x[],
+                                                                 const PylithInt aOff[],
+                                                                 const PylithInt aOff_x[],
+                                                                 const PylithScalar a[],
+                                                                 const PylithScalar a_t[],
+                                                                 const PylithScalar a_x[],
+                                                                 const PylithReal t,
+                                                                 const PylithScalar x[],
+                                                                 const PylithReal n[],
+                                                                 const PylithInt numConstants,
+                                                                 const PylithScalar constants[],
+                                                                 PylithScalar f0[])
+{
+    assert(sOff);
+    assert(aOff);
+    assert(sOff_x);
+    assert(a_x);
+    assert(aOff_x);
+    assert(s);
+    assert(a);
+    assert(s_x);
+    assert(s_t);
+    assert(f0);
+
+    assert(numS >= 5);
+    assert(numA >= 10);
+
+    const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+    const PylithInt i_disp_x = 0;
+
+    // Index for auxiliary fields
+    const PylithInt i_thickness = 0;
+    const PylithInt i_porosity = 1;
+    const PylithInt i_beta_p = 2;
+    const PylithInt i_beta_sigma = 3;
+    const PylithInt i_permeabilility_tangential = 4;
+    const PylithInt i_permeabilility_normal = 5;
+    const PylithInt i_fluid_viscosity = 6;
+    const PylithInt i_bulk_modulus_negative = 7;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_bulk_modulus_positive = 9;
+    const PylithInt i_shear_modulus_positive = 10;
+    const PylithInt i_body_force = numA - 3;
+
+    const PylithScalar thickness = a[aOff[i_thickness]];
+    const PylithScalar porosity = a[aOff[i_porosity]];
+    const PylithScalar betaP = a[aOff[i_beta_p]];
+    const PylithScalar betaSigma = a[aOff[i_beta_sigma]];
+    const PylithScalar permeabilityTangential = a[aOff[i_permeabilility_tangential]];
+    const PylithScalar permeabilityNormal = a[aOff[i_permeabilility_normal]];
+    const PylithScalar fluidViscosity = a[aOff[i_fluid_viscosity]];
+    const PylithScalar *bodyForce_x = &a_x[aOff_x[i_body_force]];
+
+    // Divergence of body force in the first spaceDim - 1 directions
+    PylithScalar bodyForce_div = 0.;
+
+    for (PylithInt i = 0; i < spaceDim - 1; ++i)
+    {
+        bodyForce_div += bodyForce_x[i * spaceDim + i];
+    }
+
+    // Pressure and pressure_t
+    const PylithInt sOffpressureN = _FaultPoroDiffusionCohesiveKin::pressure_sOff(sOff, numS);
+    const PylithInt sOffpressureP = sOffpressureN + 1;
+    const PylithInt sOffpressureFault = _FaultPoroDiffusionCohesiveKin::fault_pressure_sOff(sOff, numS);
+
+    const PylithScalar pressureN = s[sOffpressureN];
+    const PylithScalar pressureP = s[sOffpressureP];
+    const PylithScalar pressureFault = s[sOffpressureFault];
+    const PylithScalar pressureN_t = s_t[sOffpressureN];
+    const PylithScalar pressureP_t = s_t[sOffpressureP];
+    const PylithScalar pressureFault_t = s_t[sOffpressureFault];
+
+    // ** TO DO **
+    // Pull out drained bulk modulus and shear modulus from the surrounding bulks
+    const PylithScalar bulkModulusN = a[aOff[i_bulk_modulus_negative]];
+    const PylithScalar bulkModulusP = a[aOff[i_bulk_modulus_positive]];
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
+
+    // Strain components
+    const PylithInt sOffDispN_x = sOff_x[i_disp_x];
+    const PylithInt sOffDispP_x = sOffDispN_x + spaceDim ^ 2;
+    const PylithInt fOffp_fault = 0;
+
+    const PylithScalar *dispN_x = &s_x[sOffDispN_x];
+    const PylithScalar *dispP_x = &s_x[sOffDispP_x];
+
+    // Trace_strain, no transformation required
+
+    const PylithInt sOffTraceStrainN = _FaultPoroDiffusionCohesiveKin::trace_strain_sOff(sOff, numS);
+    const PylithInt sOffTraceStrainP = sOffTraceStrainN + 1;
+    const PylithScalar traceStrainN = s[sOffTraceStrainN];
+    const PylithScalar traceStrainP = s[sOffTraceStrainP];
+
+    // \sigma_nn, requires transformation
+    // \sigma_nn = (K_u - 2G/3) \epsilon_v + 2G strain_nn
+    // strain_nn = n_i u_{i,j} n_j
+    PylithScalar strain_nnN = 0.;
+    PylithScalar strain_nnP = 0.;
+    for (PylithInt i = 0; i < spaceDim; ++i)
+    {
+        for (PylithInt j = 0; j < spaceDim; ++j)
+        {
+            strain_nnN += n[i] * dispN_x[i * spaceDim + j] * n[j];
+            strain_nnP += n[i] * dispP_x[i * spaceDim + j] * n[j];
+        }
+    }
+
+    const PylithScalar stress_nnN = (bulkModulusN - 2. * shearModulusN / 3.) * traceStrainN + 2. * shearModulusN * strain_nnN;
+    const PylithScalar stress_nnP = (bulkModulusP - 2. * shearModulusP / 3.) * traceStrainP + 2. * shearModulusP * strain_nnP;
+
+    f0[fOffp_fault] += porosity * (betaP * (pressureN_t + 2. * pressureFault_t + pressureP_t) / 4. +
+                                   betaSigma * (stress_nnN + stress_nnP) / 2.) +
+                           permeabilityTangential / fluidViscosity * bodyForce_div - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / (thickness*thickness);
+
+} // f0p_fault_body_source
+
+
+// ----------------------------------------------------------------------
+// f0 function for p_fault constraint equation:
+// f0p_fault = porosity * (\beta^p * (\dot{p}^+ + 2 \dot{p}^f + \dot{p}^-)/4
+//                         + \beta^\sigma * (\dot{\sigma}^+_{nn} + \dot{\sigma}^-_{nn}))
+//             + \kappa_{fx} / \mu * \vnabla(2D) \cdot body_force
+//             - \kappa_{fz} / \mu * (p^+ - 2p_f + p^-) / h^2 - source
+void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_source(const PylithInt dim,
+                                                                 const PylithInt numS,
+                                                                 const PylithInt numA,
+                                                                 const PylithInt sOff[],
+                                                                 const PylithInt sOff_x[],
+                                                                 const PylithScalar s[],
+                                                                 const PylithScalar s_t[],
+                                                                 const PylithScalar s_x[],
+                                                                 const PylithInt aOff[],
+                                                                 const PylithInt aOff_x[],
+                                                                 const PylithScalar a[],
+                                                                 const PylithScalar a_t[],
+                                                                 const PylithScalar a_x[],
+                                                                 const PylithReal t,
+                                                                 const PylithScalar x[],
+                                                                 const PylithReal n[],
+                                                                 const PylithInt numConstants,
+                                                                 const PylithScalar constants[],
+                                                                 PylithScalar f0[])
+{
+    assert(sOff);
+    assert(aOff);
+    assert(sOff_x);
+    assert(a_x);
+    assert(aOff_x);
+    assert(s);
+    assert(a);
+    assert(s_x);
+    assert(s_t);
+    assert(f0);
+
+    assert(numS >= 5);
+    assert(numA >= 10);
+
+    const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+    const PylithInt i_disp_x = 0;
+
+    // Index for auxiliary fields
+    const PylithInt i_thickness = 0;
+    const PylithInt i_porosity = 1;
+    const PylithInt i_beta_p = 2;
+    const PylithInt i_beta_sigma = 3;
+    const PylithInt i_permeabilility_tangential = 4;
+    const PylithInt i_permeabilility_normal = 5;
+    const PylithInt i_fluid_viscosity = 6;
+    const PylithInt i_bulk_modulus_negative = 7;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_bulk_modulus_positive = 9;
+    const PylithInt i_shear_modulus_positive = 10;
+    const PylithInt i_source = numA - 2;
+
+    const PylithScalar thickness = a[aOff[i_thickness]];
+    const PylithScalar porosity = a[aOff[i_porosity]];
+    const PylithScalar betaP = a[aOff[i_beta_p]];
+    const PylithScalar betaSigma = a[aOff[i_beta_sigma]];
+    const PylithScalar permeabilityTangential = a[aOff[i_permeabilility_tangential]];
+    const PylithScalar permeabilityNormal = a[aOff[i_permeabilility_normal]];
+    const PylithScalar fluidViscosity = a[aOff[i_fluid_viscosity]];
+    const PylithScalar *bodyForce_x = &a_x[aOff_x[i_body_force]];
+    const PylithScalar source = a[aOff[i_source]];
+
+
+    // Pressure and pressure_t
+    const PylithInt sOffpressureN = _FaultPoroDiffusionCohesiveKin::pressure_sOff(sOff, numS);
+    const PylithInt sOffpressureP = sOffpressureN + 1;
+    const PylithInt sOffpressureFault = _FaultPoroDiffusionCohesiveKin::fault_pressure_sOff(sOff, numS);
+
+    const PylithScalar pressureN = s[sOffpressureN];
+    const PylithScalar pressureP = s[sOffpressureP];
+    const PylithScalar pressureFault = s[sOffpressureFault];
+    const PylithScalar pressureN_t = s_t[sOffpressureN];
+    const PylithScalar pressureP_t = s_t[sOffpressureP];
+    const PylithScalar pressureFault_t = s_t[sOffpressureFault];
+
+    // ** TO DO **
+    // Pull out drained bulk modulus and shear modulus from the surrounding bulks
+    const PylithScalar bulkModulusN = a[aOff[i_bulk_modulus_negative]];
+    const PylithScalar bulkModulusP = a[aOff[i_bulk_modulus_positive]];
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
+
+    // Strain components
+    const PylithInt sOffDispN_x = sOff_x[i_disp_x];
+    const PylithInt sOffDispP_x = sOffDispN_x + spaceDim ^ 2;
+    const PylithInt fOffp_fault = 0;
+
+    const PylithScalar *dispN_x = &s_x[sOffDispN_x];
+    const PylithScalar *dispP_x = &s_x[sOffDispP_x];
+
+    // Trace_strain, no transformation required
+
+    const PylithInt sOffTraceStrainN = _FaultPoroDiffusionCohesiveKin::trace_strain_sOff(sOff, numS);
+    const PylithInt sOffTraceStrainP = sOffTraceStrainN + 1;
+    const PylithScalar traceStrainN = s[sOffTraceStrainN];
+    const PylithScalar traceStrainP = s[sOffTraceStrainP];
+
+    // \sigma_nn, requires transformation
+    // \sigma_nn = (K_u - 2G/3) \epsilon_v + 2G strain_nn
+    // strain_nn = n_i u_{i,j} n_j
+    PylithScalar strain_nnN = 0.;
+    PylithScalar strain_nnP = 0.;
+    for (PylithInt i = 0; i < spaceDim; ++i)
+    {
+        for (PylithInt j = 0; j < spaceDim; ++j)
+        {
+            strain_nnN += n[i] * dispN_x[i * spaceDim + j] * n[j];
+            strain_nnP += n[i] * dispP_x[i * spaceDim + j] * n[j];
+        }
+    }
+
+    const PylithScalar stress_nnN = (bulkModulusN - 2. * shearModulusN / 3.) * traceStrainN + 2. * shearModulusN * strain_nnN;
+    const PylithScalar stress_nnP = (bulkModulusP - 2. * shearModulusP / 3.) * traceStrainP + 2. * shearModulusP * strain_nnP;
+
+    f0[fOffp_fault] += porosity * (betaP * (pressureN_t + 2. * pressureFault_t + pressureP_t) / 4. +
+                                   betaSigma * (stress_nnN + stress_nnP) / 2.) +
+                           permeabilityTangential / fluidViscosity  - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / thickness ^
+                       2 - source;
+
+} // f0p_fault_source
+
+// ----------------------------------------------------------------------
+// f0 function for p_fault constraint equation:
+// f0p_fault = porosity * (\beta^p * (\dot{p}^+ + 2 \dot{p}^f + \dot{p}^-)/4
+//                         + \beta^\sigma * (\dot{\sigma}^+_{nn} + \dot{\sigma}^-_{nn}))
+//             + \kappa_{fx} / \mu * \vnabla(2D) \cdot body_force
+//             - \kappa_{fz} / \mu * (p^+ - 2p_f + p^-) / h^2 - source
+void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body_source(const PylithInt dim,
+                                                                 const PylithInt numS,
+                                                                 const PylithInt numA,
+                                                                 const PylithInt sOff[],
+                                                                 const PylithInt sOff_x[],
+                                                                 const PylithScalar s[],
+                                                                 const PylithScalar s_t[],
+                                                                 const PylithScalar s_x[],
+                                                                 const PylithInt aOff[],
+                                                                 const PylithInt aOff_x[],
+                                                                 const PylithScalar a[],
+                                                                 const PylithScalar a_t[],
+                                                                 const PylithScalar a_x[],
+                                                                 const PylithReal t,
+                                                                 const PylithScalar x[],
+                                                                 const PylithReal n[],
+                                                                 const PylithInt numConstants,
+                                                                 const PylithScalar constants[],
+                                                                 PylithScalar f0[])
+{
+    assert(sOff);
+    assert(aOff);
+    assert(sOff_x);
+    assert(a_x);
+    assert(aOff_x);
+    assert(s);
+    assert(a);
+    assert(s_x);
+    assert(s_t);
+    assert(f0);
+
+    assert(numS >= 5);
+    assert(numA >= 10);
+
+    const PylithInt spaceDim = dim + 1; // :KLUDGE: dim passed in is spaceDim-1
+    const PylithInt i_disp_x = 0;
+
+    // Index for auxiliary fields
+    const PylithInt i_thickness = 0;
+    const PylithInt i_porosity = 1;
+    const PylithInt i_beta_p = 2;
+    const PylithInt i_beta_sigma = 3;
+    const PylithInt i_permeabilility_tangential = 4;
+    const PylithInt i_permeabilility_normal = 5;
+    const PylithInt i_fluid_viscosity = 6;
+    const PylithInt i_bulk_modulus_negative = 7;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_bulk_modulus_positive = 9;
+    const PylithInt i_shear_modulus_positive = 10;
     const PylithInt i_body_force = numA - 3;
     const PylithInt i_source = numA - 2;
 
@@ -656,7 +1089,7 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault(const PylithInt
                            permeabilityTangential / fluidViscosity * bodyForce_div - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / thickness ^
                        2 - source;
 
-} // f0p_fault
+} // f0p_fault_body_source
 
 // ----------------------------------------------------------------------
 // f1 function for p_fault constraint equation:
