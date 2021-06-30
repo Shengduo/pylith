@@ -62,6 +62,41 @@ public:
 
     /// Add skempton coefficient to auxiliary field.
     void addSkemptonCoefficient(void);
+    
+    /// Add functions for FaultPoroDiffusionCohesivekin
+    
+    /// Add layer thickness to auxiliary field.
+    void addThickness(void);
+
+    /// Add porosity to auxiliary field.
+    void addPorosity(void);
+
+    /// Add betaP to auxiliary field.
+    void addBetaP(void);
+
+    /// Add betaSigma to auxiliary field.
+    void addBetaSigma(void);
+
+    /// Add tangential permeability to auxiliary field.
+    void addPermeabilityTangential(void);
+
+    /// Add normal permeability to auxiliary field.
+    void addPermeabilityNormal(void);
+
+    /// Add fluid viscosity to auxiliary field.
+    void addFluidViscosity(void);
+
+    /// Add negative side bulk modulus to auxiliary field.
+    void addBulkModulusNegative(void);
+
+    /// Add positive side bulk modulus to auxiliary field.
+    void addBulkModulusPositive(void);
+
+    /// Add negative side shear modulus to auxiliary field.
+    void addShearModulusNegative(void);
+
+    /// Add positive side shear modulus to auxiliary field.
+    void addShearModulusPositive(void);
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:
