@@ -192,6 +192,7 @@ pylith::faults::AuxiliaryFactoryKinematic::addSlipRate(void) {
 } // addSlipRate
 
 
+<<<<<<< HEAD
 // ---------------------------------------------------------------------------------------------------------------------
 // Add fault slip acceleration subfield to auxiliary fields.
 void
@@ -225,6 +226,87 @@ pylith::faults::AuxiliaryFactoryKinematic::addSlipAcceleration(void) {
 
     PYLITH_METHOD_END;
 } // addSlipAcc
+=======
+// --------------------------------------------------------------------
+// Add undrained bulk modulus subfield to auxiliary fields.
+void
+pylith::materials::AuxiliaryFactoryKinematic::addUndrainedBulkModulus(void) { // UndrainedBulkModulus
+    PYLITH_METHOD_BEGIN;
+    PYLITH_JOURNAL_DEBUG("addUndrainedBulkModulus(void)");
+
+    const char* subfieldName = "undrained_bulk_modulus";
+    const PylithReal pressureScale = _normalizer->getPressureScale();
+
+    pylith::topology::Field::Description description;
+    description.label = subfieldName;
+    description.alias = subfieldName;
+    description.vectorFieldType = pylith::topology::Field::SCALAR;
+    description.numComponents = 1;
+    description.componentNames.resize(1);
+    description.componentNames[0] = subfieldName;
+    description.scale = pressureScale;
+    description.validator = pylith::topology::FieldQuery::validatorPositive;
+
+    _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
+    this->setSubfieldQuery(subfieldName);
+
+    PYLITH_METHOD_END;
+} // addUndrainedBulkModulus
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Add shear modulus subfield to auxiliary fields.
+void
+pylith::materials::AuxiliaryFactoryKinematic::addShearModulus(void) {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_JOURNAL_DEBUG("addShearModulus(void)");
+
+    const char* subfieldName = "shear_modulus";
+    const PylithReal pressureScale = _normalizer->getPressureScale();
+
+    pylith::topology::Field::Description description;
+    description.label = subfieldName;
+    description.alias = subfieldName;
+    description.vectorFieldType = pylith::topology::Field::SCALAR;
+    description.numComponents = 1;
+    description.componentNames.resize(1);
+    description.componentNames[0] = subfieldName;
+    description.scale = pressureScale;
+    description.validator = pylith::topology::FieldQuery::validatorNonnegative;
+
+    _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
+    this->setSubfieldQuery(subfieldName);
+
+    PYLITH_METHOD_END;
+} // addShearModulus
+
+
+// ---------------------------------------------------------------------
+// Add Skempton coefficient subfield to auxiliary fields.
+void
+pylith::materials::AuxiliaryFactoryKinematic::addSkemptonCoefficient(void) { // skemptonCoefficient
+    PYLITH_METHOD_BEGIN;
+    PYLITH_JOURNAL_DEBUG("addSkemptonCoefficient(void)");
+
+    const char* subfieldName = "skempton_coefficient";
+    const PylithReal noScale = 1;
+
+    pylith::topology::Field::Description description;
+    description.label = subfieldName;
+    description.alias = subfieldName;
+    description.vectorFieldType = pylith::topology::Field::SCALAR;
+    description.numComponents = 1;
+    description.componentNames.resize(1);
+    description.componentNames[0] = subfieldName;
+    description.scale = noScale;
+    description.validator = pylith::topology::FieldQuery::validatorPositive;
+
+    _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
+    pylith::faults::Query::skemptonCoefficientFromInput(subfieldName, this);
+
+    PYLITH_METHOD_END;
+} // addSkemptonCoefficient
+>>>>>>> acee2306d... Incomplete update
 
 
 // End of file

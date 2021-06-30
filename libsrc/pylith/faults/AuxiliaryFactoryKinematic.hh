@@ -54,8 +54,19 @@ public:
     /// Add slip rate subfield to auxiliary field.
     void addSlipRate(void);
 
+<<<<<<< HEAD
     /// Add slip acceleration subfield to auxiliary field.
     void addSlipAcceleration(void);
+=======
+    /// Add undrained bulk modulus to auxiliary field.
+    void addUndrainedBulkModulus(void);
+
+    /// Add shear modulus to auxiliary field.
+    void addShearModulus(void);
+
+    /// Add skempton coefficient to auxiliary field.
+    void addSkemptonCoefficient(void);
+>>>>>>> acee2306d... Incomplete update
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:
