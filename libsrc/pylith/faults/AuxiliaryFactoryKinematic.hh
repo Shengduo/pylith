@@ -54,10 +54,8 @@ public:
     /// Add slip rate subfield to auxiliary field.
     void addSlipRate(void);
 
-<<<<<<< HEAD
     /// Add slip acceleration subfield to auxiliary field.
     void addSlipAcceleration(void);
-=======
     /// Add undrained bulk modulus to auxiliary field.
     void addUndrainedBulkModulus(void);
 
@@ -66,7 +64,40 @@ public:
 
     /// Add skempton coefficient to auxiliary field.
     void addSkemptonCoefficient(void);
->>>>>>> acee2306d... Incomplete update
+    /// Add functions for FaultPoroDiffusionCohesivekin
+    
+    /// Add layer thickness to auxiliary field.
+    void addThickness(void);
+
+    /// Add porosity to auxiliary field.
+    void addPorosity(void);
+
+    /// Add betaP to auxiliary field.
+    void addBetaP(void);
+
+    /// Add betaSigma to auxiliary field.
+    void addBetaSigma(void);
+
+    /// Add tangential permeability to auxiliary field.
+    void addPermeabilityTangential(void);
+
+    /// Add normal permeability to auxiliary field.
+    void addPermeabilityNormal(void);
+
+    /// Add fluid viscosity to auxiliary field.
+    void addFluidViscosity(void);
+
+    /// Add negative side bulk modulus to auxiliary field.
+    void addBulkModulusNegative(void);
+
+    /// Add positive side bulk modulus to auxiliary field.
+    void addBulkModulusPositive(void);
+
+    /// Add negative side shear modulus to auxiliary field.
+    void addShearModulusNegative(void);
+
+    /// Add positive side shear modulus to auxiliary field.
+    void addShearModulusPositive(void);
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:
