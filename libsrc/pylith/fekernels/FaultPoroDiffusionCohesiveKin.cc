@@ -38,6 +38,10 @@
  * permeability_tangential(1),         4
  * permeability_normal(1),             5
  * fluid_viscosity(1),                 6
+ * bulk_modulus_negative(1),           7
+ * shear_modulus_negative(1),          8
+ * bulk_modulus_positive(1),           9
+ * shear_modulus_positive(1),          10
  * body_force(dim),                    numA - 3
  * source (1),                         numA - 2
  * slip(dim)                           numA - 1 
@@ -571,6 +575,10 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault(const PylithInt
     const PylithInt i_permeabilility_tangential = 4;
     const PylithInt i_permeabilility_normal = 5;
     const PylithInt i_fluid_viscosity = 6;
+    const PylithInt i_bulk_modulus_negative = 7;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_bulk_modulus_positive = 9;
+    const PylithInt i_shear_modulus_positive = 10;
     const PylithInt i_body_force = numA - 3;
     const PylithInt i_source = numA - 2;
 
@@ -606,10 +614,10 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault(const PylithInt
 
     // ** TO DO **
     // Pull out drained bulk modulus and shear modulus from the surrounding bulks
-    const PylithScalar bulkModulusN;
-    const PylithScalar bulkModulusP;
-    const PylithScalar shearModulusN;
-    const PylithScalar shearModulusP;
+    const PylithScalar bulkModulusN = a[aOff[i_bulk_modulus_negative]];
+    const PylithScalar bulkModulusP = a[aOff[i_bulk_modulus_positive]];
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
 
     // Strain components
     const PylithInt sOffDispN_x = sOff_x[i_disp_x];
@@ -904,11 +912,13 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf1p_fu(const PylithInt d
     // Index for auxiliary fields
     const PylithInt i_porosity = 1;
     const PylithInt i_beta_sigma = 3;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_shear_modulus_positive = 10;
 
     // ** TO DO **
     // Pull out shear modulus from the bulks
-    const PylithScalar shearModulusN;
-    const PylithScalar shearModulusP;
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
 
     const PylithScalar porosity = a[aOff[i_porosity]];
     const PylithScalar betaSigma = a[aOff[i_beta_sigma]];
@@ -968,10 +978,15 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fe(const PylithInt d
 
     // ** TO DO **
     // Pull out shear and bulk modulus from the bulks
-    const PylithScalar shearModulusN;
-    const PylithScalar shearModulusP;
-    const PylithScalar bulkModulusN;
-    const PylithScalar bulkModulusP;
+    const PylithInt i_bulk_modulus_negative = 7;
+    const PylithInt i_shear_modulus_negative = 8;
+    const PylithInt i_bulk_modulus_positive = 9;
+    const PylithInt i_shear_modulus_positive = 10;
+    
+    const PylithScalar bulkModulusN = a[aOff[i_bulk_modulus_negative]];
+    const PylithScalar bulkModulusP = a[aOff[i_bulk_modulus_positive]];
+    const PylithScalar shearModulusN = a[aOff[i_shear_modulus_negative]];
+    const PylithScalar shearModulusP = a[aOff[i_shear_modulus_positive]];
 
     const PylithScalar porosity = a[aOff[i_porosity]];
     const PylithScalar betaSigma = a[aOff[i_beta_sigma]];
