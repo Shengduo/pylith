@@ -18,7 +18,7 @@
 
 /** @file libsrc/faults/FaultPoroDiffusionCohesiveKin.hh
  *
- * @brief C++ implementation for a undrained poroelastic fault surface with 
+ * @brief C++ implementation for a undrained poroelastic fault surface with
  * fluid diffusion and kinematic
  * (prescribed) slip implemented with cohesive elements.
  */
@@ -59,6 +59,42 @@ public:
                        const int numNames,
                        KinSrc** ruptures,
                        const int numRuptures);
+
+    /** Include body force?
+     *
+     * @param[in] value Flag indicating to include body force term.
+     */
+    void useBodyForce(const bool value);
+
+    /** Include body force?
+     *
+     * @returns True if including body force term, false otherwise.
+     */
+    bool useBodyForce(void) const;
+
+    /** Include source?
+     *
+     * @param[in] value Flag indicating to include source term.
+     */
+    void useSource(const bool value);
+
+    /** Include source?
+     *
+     * @returns True if including source term, false otherwise.
+     */
+    bool useSource(void) const;
+
+    /** Include constant pressure source?
+     *
+     * @param[in] value Flag indicating to include constant pressure source term.
+     */
+    void useConstantPressureSource(const bool value);
+
+    /** Include constant pressure source?
+     *
+     * @returns True if including constant pressure source term, false otherwise.
+     */
+    bool useConstantPressureSource(void) const;
 
     /** Verify configuration is acceptable.
      *

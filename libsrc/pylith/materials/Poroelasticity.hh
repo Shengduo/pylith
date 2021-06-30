@@ -73,7 +73,7 @@ public:
      */
     void useConstantPressureSource(const bool value);
 
-    /** Include source density?
+    /** Include constant pressure source?
      *
      * @returns True if including constant pressure source term, false otherwise.
      */

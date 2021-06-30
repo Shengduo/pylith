@@ -20,47 +20,45 @@
 
 #include "FaultPoroDiffusionCohesiveKin.hh" // implementation of object methods
 
-#include "pylith/faults/KinSrc.hh"                    // USES KinSrc
+#include "pylith/faults/KinSrc.hh" // USES KinSrc
 #include "pylith/faults/AuxiliaryFactoryKinematic.hh" // USES AuxiliaryFactoryKinematic
-#include "pylith/feassemble/IntegratorInterface.hh"   // USES IntegratorInterface
-#include "pylith/feassemble/ConstraintSimple.hh"      // USES ConstraintSimple
+#include "pylith/feassemble/IntegratorInterface.hh" // USES IntegratorInterface
+#include "pylith/feassemble/ConstraintSimple.hh" // USES ConstraintSimple
 
-#include "pylith/topology/Mesh.hh"        // USES Mesh
-#include "pylith/topology/Field.hh"       // USES Field
-#include "pylith/topology/FieldOps.hh"    // USES FieldOps::checkDiscretization()
+#include "pylith/topology/Mesh.hh" // USES Mesh
+#include "pylith/topology/Field.hh" // USES Field
+#include "pylith/topology/FieldOps.hh" // USES FieldOps::checkDiscretization()
 #include "pylith/topology/VisitorMesh.hh" // USES VecVisitorMesh
 
 #include "pylith/fekernels/FaultPoroDiffusionCohesiveKin.hh" // USES FaultPoroDiffusionCohesiveKin
 
 #include "pylith/utils/EventLogger.hh" // USES EventLogger
-#include "pylith/utils/journals.hh"    // USES PYLITH_COMPONENT_*
+#include "pylith/utils/journals.hh" // USES PYLITH_COMPONENT_*
 
-#include "spatialdata/geocoords/CoordSys.hh"   // USES CoordSys
+#include "spatialdata/geocoords/CoordSys.hh" // USES CoordSys
 #include "spatialdata/units/Nondimensional.hh" // USES Nondimensionalizer
-#include "spatialdata/spatialdb/SpatialDB.hh"  // USES SpatialDB
+#include "spatialdata/spatialdb/SpatialDB.hh" // USES SpatialDB
 
-#include <cmath>     // USES pow(), sqrt()
+#include <cmath> // USES pow(), sqrt()
 #include <strings.h> // USES strcasecmp()
-#include <cstring>   // USES strlen()
-#include <cstdlib>   // USES atoi()
-#include <cassert>   // USES assert()
-#include <sstream>   // USES std::ostringstream
+#include <cstring> // USES strlen()
+#include <cstdlib> // USES atoi()
+#include <cassert> // USES assert()
+#include <sstream> // USES std::ostringstream
 #include <stdexcept> // USES std::runtime_error
-#include <typeinfo>  // USES typeid()
+#include <typeinfo> // USES typeid()
 
 // ---------------------------------------------------------------------------------------------------------------------
 typedef pylith::feassemble::IntegratorInterface::ResidualKernels ResidualKernels;
 typedef pylith::feassemble::IntegratorInterface::JacobianKernels JacobianKernels;
 
 // ---------------------------------------------------------------------------------------------------------------------
-namespace pylith
-{
-    namespace faults
-    {
-        class _FaultPoroDiffusionCohesiveKin
-        {
+namespace pylith {
+    namespace faults {
+        class _FaultPoroDiffusionCohesiveKin {
             // PUBLIC MEMBERS //////////////////////////////////////////////////////////////////////////////////////////
-        public:
+public:
+
             /** Set kernels for LHS residual.
              *
              * @param[out] integrator Integrator for interface.
@@ -97,23 +95,23 @@ namespace pylith
 // ---------------------------------------------------------------------------------------------------------------------
 // Default constructor.
 pylith::faults::FaultPoroDiffusionCohesiveKin::FaultPoroDiffusionCohesiveKin(void) : _auxiliaryFactory(new pylith::faults::AuxiliaryFactoryKinematic),
-                                                                                     _slipVecRupture(NULL),
-                                                                                     _slipVecTotal(NULL)
-{
+    _slipVecRupture(NULL),
+    _slipVecTotal(NULL) {
     pylith::utils::PyreComponent::setName(_FaultPoroDiffusionCohesiveKin::pyreComponent);
 } // constructor
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Destructor.
-pylith::faults::FaultPoroDiffusionCohesiveKin::~FaultPoroDiffusionCohesiveKin(void)
-{
+pylith::faults::FaultPoroDiffusionCohesiveKin::~FaultPoroDiffusionCohesiveKin(void) {
     deallocate();
 } // destructor
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Deallocate PETSc and local data structures.
-void pylith::faults::FaultPorodiffusionCohesiveKin::deallocate(void)
-{
+void
+pylith::faults::FaultPorodiffusionCohesiveKin::deallocate(void) {
     FaultCohesive::deallocate();
 
     PetscErrorCode err = VecDestroy(&_slipVecRupture);
@@ -125,13 +123,14 @@ void pylith::faults::FaultPorodiffusionCohesiveKin::deallocate(void)
     _ruptures.clear(); // :TODO: Use shared pointers for earthquake ruptures
 } // deallocate
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Set kinematic earthquake ruptures.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::setEqRuptures(const char *const *names,
-                                                                  const int numNames,
-                                                                  KinSrc **ruptures,
-                                                                  const int numRuptures)
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::setEqRuptures(const char *const *names,
+                                                             const int numNames,
+                                                             KinSrc **ruptures,
+                                                             const int numRuptures) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("setEqRuptures(names=" << names << ", numNames=" << numNames << ", ruptures=" << ruptures << ", numRuptures=" << numRuptures << ")");
 
@@ -139,10 +138,8 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::setEqRuptures(const char *co
 
     // :TODO: Use shared pointers for earthquake ruptures
     _ruptures.clear();
-    for (int i = 0; i < numRuptures; ++i)
-    {
-        if (!ruptures[i])
-        {
+    for (int i = 0; i < numRuptures; ++i) {
+        if (!ruptures[i]) {
             std::ostringstream msg;
             msg << "Null earthquake rupture object for earthquake rupture '" << names[i] << "'.";
             throw std::runtime_error(msg.str());
@@ -153,15 +150,69 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::setEqRuptures(const char *co
     PYLITH_METHOD_END;
 } // setEqRuptures
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Include body force?
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::useBodyForce(const bool value) {
+    PYLITH_COMPONENT_DEBUG("useBodyForce(value=" << value << ")");
+
+    _useBodyForce = value;
+} // useBodyForce
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Include body force?
+bool
+pylith::faults::FaultPoroDiffusionCohesiveKin::useBodyForce(void) const {
+    return _useBodyForce;
+} // useBodyForce
+
+
+// ----------------------------------------------------------------------
+// Include source?
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::useSource(const bool value) {
+    PYLITH_COMPONENT_DEBUG("useSource(value=" << value << ")");
+
+    _useSource = value;
+} // useSource
+
+
+// ----------------------------------------------------------------------
+// Include source density?
+bool
+pylith::faults::FaultPoroDiffusionCohesiveKin::useSource(void) const {
+    return _useSource;
+} // useSource
+
+
+// ----------------------------------------------------------------------
+// Include constant pressure source?
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::useConstantPressureSource(const bool value) {
+    PYLITH_COMPONENT_DEBUG("useConstantPressureSource(value=" << value << ")");
+
+    _useConstantPressureSource = value;
+} // useConstantPressureSource
+
+
+// ----------------------------------------------------------------------
+// Include constant pressure source?
+bool
+pylith::faults::FaultPoroDiffusionCohesiveKin::useConstantPressureSource(void) const {
+    return _useConstantPressureSource;
+} // useConstantPressureSource
+
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Verify configuration is acceptable.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const pylith::topology::Field &solution) const
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const pylith::topology::Field &solution) const {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("verifyConfiguration(solution=" << solution.getLabel() << ")");
 
-    if (!solution.hasSubfield("lagrange_multiplier_fault"))
-    {
+    if (!solution.hasSubfield("lagrange_multiplier_fault")) {
         std::ostringstream msg;
         msg << "Cannot find 'lagrange_multiplier_fault' subfield in solution field for poroelastic diffusive fault implementation in component '"
             << PyreComponent::getIdentifier() << "'.";
@@ -172,27 +223,23 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const py
      * Implement or verify field::hasSubfield("pressure", "trace_strain", "fault_pressure") is implemented
      * Seems that this is fine, at least no need to change the function field::hasSubfield
      */
-    if (!solution.hasSubfield("pressure"))
-    {
+    if (!solution.hasSubfield("pressure")) {
         std::ostringstream msg;
         msg << "Cannot find 'pressure' subfield in solution field for poroelastic diffusive fault implementation in component '"
             << PyreComponent::getIdentifier() << "'.";
         throw std::runtime_error(msg.str());
     } // if
 
-    if (!solution.hasSubfield("fault_pressure"))
-    {
+    if (!solution.hasSubfield("fault_pressure")) {
         std::ostringstream msg;
         msg << "Cannot find 'fault_pressure' subfield in solution field for poroelastic diffusive fault implementation in component '"
             << PyreComponent::getIdentifier() << "'.";
         throw std::runtime_error(msg.str());
     } // if
 
-    switch (_formulation)
-    {
+    switch (_formulation) {
     case QUASISTATIC:
-        if (!solution.hasSubfield("displacement"))
-        {
+        if (!solution.hasSubfield("displacement")) {
             std::ostringstream msg;
             msg << "Cannot find 'displacement' subfield in solution field for fault implementation in component '"
                 << PyreComponent::getIdentifier() << "'.";
@@ -200,8 +247,7 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const py
         } // if
         break;
     case DYNAMIC_IMEX:
-        if (!solution.hasSubfield("velocity"))
-        {
+        if (!solution.hasSubfield("velocity")) {
             std::ostringstream msg;
             msg << "Cannot find 'velocity' subfield in solution field for fault implementation in component '"
                 << PyreComponent::getIdentifier() << "'.";
@@ -218,11 +264,11 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const py
     PYLITH_METHOD_END;
 } // verifyConfiguration
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Create integrator and set kernels.
 pylith::feassemble::Integrator *
-pylith::faults::FaultPoroDiffusionCohesiveKin::createIntegrator(const pylith::topology::Field &solution)
-{
+pylith::faults::FaultPoroDiffusionCohesiveKin::createIntegrator(const pylith::topology::Field &solution) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("createIntegrator(solution=" << solution.getLabel() << ")");
 
@@ -239,18 +285,17 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createIntegrator(const pylith::to
     PYLITH_METHOD_RETURN(integrator);
 } // createIntegrator
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Create constraint for buried fault edges and faces.
 // ** TO DO **
 // Check if new constraint needed for poro-fault
 pylith::feassemble::Constraint *
-pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::topology::Field &solution)
-{
+pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::topology::Field &solution) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("createConstraint(solution=" << solution.getLabel() << ")");
 
-    if (0 == strlen(getBuriedEdgesMarkerLabel()))
-    {
+    if (0 == strlen(getBuriedEdgesMarkerLabel())) {
         PYLITH_METHOD_RETURN(NULL);
     } // if
 
@@ -260,8 +305,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::to
 
     pylith::int_array constrainedDOF;
     constrainedDOF.resize(numComponents);
-    for (int c = 0; c < numComponents; ++c)
-    {
+    for (int c = 0; c < numComponents; ++c) {
         constrainedDOF[c] = c;
     }
     // Make new label for cohesive edges and faces
@@ -288,8 +332,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::to
     PYLITH_CHECK_ERROR(err);
     err = ISGetIndices(pointIS, &points);
     PYLITH_CHECK_ERROR(err);
-    for (int p = 0; p < n; ++p)
-    {
+    for (int p = 0; p < n; ++p) {
         const PetscInt *support = NULL;
         PetscInt supportSize;
 
@@ -297,15 +340,13 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::to
         PYLITH_CHECK_ERROR(err);
         err = DMPlexGetSupport(dm, points[p], &support);
         PYLITH_CHECK_ERROR(err);
-        for (int s = 0; s < supportSize; ++s)
-        {
+        for (int s = 0; s < supportSize; ++s) {
             DMPolytopeType ct;
             const PetscInt spoint = support[s];
 
             err = DMPlexGetCellType(dm, spoint, &ct);
             PYLITH_CHECK_ERROR(err);
-            if ((ct == DM_POLYTOPE_SEG_PRISM_TENSOR) || (ct == DM_POLYTOPE_POINT_PRISM_TENSOR))
-            {
+            if ((ct == DM_POLYTOPE_SEG_PRISM_TENSOR) || (ct == DM_POLYTOPE_POINT_PRISM_TENSOR)) {
                 const PetscInt *cone = NULL;
                 PetscInt coneSize;
 
@@ -313,21 +354,19 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::to
                 PYLITH_CHECK_ERROR(err);
                 err = DMPlexGetCone(dm, spoint, &cone);
                 PYLITH_CHECK_ERROR(err);
-                for (int c = 0; c < coneSize; ++c)
-                {
+                for (int c = 0; c < coneSize; ++c) {
                     PetscInt val;
                     err = DMLabelGetValue(buriedLabel, cone[c], &val);
                     PYLITH_CHECK_ERROR(err);
-                    if (val >= 0)
-                    {
+                    if (val >= 0) {
                         err = DMLabelSetValue(buriedCohesiveLabel, spoint, 1);
                         PYLITH_CHECK_ERROR(err);
                         break;
                     }
                 } // for
-            }     // if
-        }         // for
-    }             // for
+            } // if
+        } // for
+    } // for
 
     pylith::feassemble::ConstraintSimple *constraint = new pylith::feassemble::ConstraintSimple(this);
     assert(constraint);
@@ -341,12 +380,12 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createConstraint(const pylith::to
     PYLITH_METHOD_RETURN(constraint);
 } // createConstraint
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Create auxiliary field.
 pylith::topology::Field *
 pylith::faults::FaultPoroDiffusionCohesiveKin::createAuxiliaryField(const pylith::topology::Field &solution,
-                                                                    const pylith::topology::Mesh &domainMesh)
-{
+                                                                    const pylith::topology::Mesh &domainMesh) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("createAuxiliaryField(solution=" << solution.getLabel() << ", domainMesh=)" << typeid(domainMesh).name() << ")");
 
@@ -389,23 +428,29 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createAuxiliaryField(const pylith
      * - numA - 2: source(1)
      * - numA - 1: slip(dim)
      */
-    _auxiliaryFactory->addThickness();              // 0
-    _auxiliaryFactory->addPorosity();               // 1
-    _auxiliaryFactory->addBetaP();                  // 2
-    _auxiliaryFactory->addBetaSigma();              // 3
+    _auxiliaryFactory->addThickness(); // 0
+    _auxiliaryFactory->addPorosity(); // 1
+    _auxiliaryFactory->addBetaP(); // 2
+    _auxiliaryFactory->addBetaSigma(); // 3
     _auxiliaryFactory->addPermeabilityTangential(); // 4
-    _auxiliaryFactory->addPermeabilityNormal();     // 5
-    _auxiliaryFactory->addFluidViscosity();         // 6
-    _auxiliaryFactory->addBulkModulusNegative();    // 7
-    _auxiliaryFactory->addShearModulusNegative();   // 8
-    _auxiliaryFactory->addBulkModulusPositive();    // 9
-    _auxiliaryFactory->addShearModulusPositive();   // 10
-    _auxiliaryFactory->addBodyForce();              // numA - 3
-    _auxiliaryFactory->addSource();                 // numA - 2
+    _auxiliaryFactory->addPermeabilityNormal(); // 5
+    _auxiliaryFactory->addFluidViscosity(); // 6
+    _auxiliaryFactory->addBulkModulusNegative(); // 7
+    _auxiliaryFactory->addShearModulusNegative(); // 8
+    _auxiliaryFactory->addBulkModulusPositive(); // 9
+    _auxiliaryFactory->addShearModulusPositive(); // 10
+    if (_useBodyForce) {
+        _auxiliaryFactory->addBodyForce(); // +1
+    } // if
+    if (_useSource) {
+        _auxiliaryFactory->addSource(); // +1
+    } // if
+    if (_useConstantPressureSource) {
+        auxiliaryFactory->addConstantPressureSource(); // +1
+    }
     // :ATTENTION: The order for adding subfields must match the order of the auxiliary fields in the FE kernels.
 
-    switch (_formulation)
-    {
+    switch (_formulation) {
     case QUASISTATIC:
         _auxiliaryFactory->addSlip(); // numA - 1
         break;
@@ -431,8 +476,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createAuxiliaryField(const pylith
     // Initialize auxiliary fields for kinematic ruptures.
     assert(auxiliaryField);
     const srcs_type::const_iterator rupturesEnd = _ruptures.end();
-    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter)
-    {
+    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter) {
         KinSrc *src = r_iter->second;
         assert(src);
         src->initialize(*auxiliaryField, *_normalizer, solution.mesh().getCoordSys());
@@ -448,28 +492,28 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createAuxiliaryField(const pylith
     PYLITH_METHOD_RETURN(auxiliaryField);
 } // createAuxiliaryField
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Create derived field.
 pylith::topology::Field *
 pylith::faults::FaultPoroDiffusionCohesiveKin::createDerivedField(const pylith::topology::Field &solution,
-                                                         const pylith::topology::Mesh &domainMesh)
-{
+                                                                  const pylith::topology::Mesh &domainMesh) {
     return NULL;
 } // createDerivedField
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Update auxiliary fields at beginning of time step.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::updateAuxiliaryField(pylith::topology::Field *auxiliaryField,
-                                                                const double t)
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::updateAuxiliaryField(pylith::topology::Field *auxiliaryField,
+                                                                    const double t) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("updateAuxiliaryField(auxiliaryField=" << auxiliaryField << ", t=" << t << ")");
 
     assert(auxiliaryField);
     assert(_normalizer);
 
-    switch (_formulation)
-    {
+    switch (_formulation) {
     case QUASISTATIC:
         this->_updateSlip(auxiliaryField, t);
         break;
@@ -486,23 +530,23 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::updateAuxiliaryField(pylith:
     PYLITH_METHOD_END;
 } // updateAuxiliaryField
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Get auxiliary factory associated with physics.
 pylith::feassemble::AuxiliaryFactory *
-pylith::faults::FaultPoroDiffusionCohesiveKin::_getAuxiliaryFactory(void)
-{
+pylith::faults::FaultPoroDiffusionCohesiveKin::_getAuxiliaryFactory(void) {
     return _auxiliaryFactory;
 } // _getAuxiliaryFactory
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Update kernel constants.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateKernelConstants(const PylithReal dt)
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::_updateKernelConstants(const PylithReal dt) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("_setKernelConstants(dt=" << dt << ")");
 
-    if (6 != _kernelConstants.size())
-    {
+    if (6 != _kernelConstants.size()) {
         _kernelConstants.resize(6);
     }
     _kernelConstants[0] = _refDir1[0];
@@ -515,11 +559,12 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateKernelConstants(const
     PYLITH_METHOD_END;
 } // _updateKernelConstants
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Update slip subfield in auxiliary field at beginning of time step.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlip(pylith::topology::Field *auxiliaryField,
-                                                       const double t)
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlip(pylith::topology::Field *auxiliaryField,
+                                                           const double t) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("updateSlip(auxiliaryField=" << auxiliaryField << ", t=" << t << ")");
 
@@ -530,8 +575,7 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlip(pylith::topology
     PetscErrorCode err = VecSet(_slipVecTotal, 0.0);
     PYLITH_CHECK_ERROR(err);
     const srcs_type::const_iterator rupturesEnd = _ruptures.end();
-    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter)
-    {
+    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter) {
         err = VecSet(_slipVecRupture, 0.0);
         PYLITH_CHECK_ERROR(err);
 
@@ -553,32 +597,30 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlip(pylith::topology
     err = VecGetArrayRead(_slipVecTotal, &slipArray);
     PYLITH_CHECK_ERROR(err);
 
-    for (PetscInt p = pStart, iSlip = 0; p < pEnd; ++p)
-    {
+    for (PetscInt p = pStart, iSlip = 0; p < pEnd; ++p) {
         const PetscInt slipDof = auxiliaryVisitor.sectionDof(p);
         const PetscInt slipOff = auxiliaryVisitor.sectionOffset(p);
-        for (PetscInt iDof = 0; iDof < slipDof; ++iDof, ++iSlip)
-        {
+        for (PetscInt iDof = 0; iDof < slipDof; ++iDof, ++iSlip) {
             auxiliaryArray[slipOff + iDof] = slipArray[iSlip];
         } // for
-    }     // for
+    } // for
     err = VecRestoreArrayRead(_slipVecTotal, &slipArray);
     PYLITH_CHECK_ERROR(err);
 
     pythia::journal::debug_t debug(pylith::utils::PyreComponent::getName());
-    if (debug.state())
-    {
+    if (debug.state()) {
         auxiliaryField->view("Fault auxiliary field after setting slip.");
     } // if
 
     PYLITH_METHOD_END;
 } // _updateSlip
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Update slip rate subfield in auxiliary field at beginning of time step.
-void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlipRate(pylith::topology::Field *auxiliaryField,
-                                                           const double t)
-{
+void
+pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlipRate(pylith::topology::Field *auxiliaryField,
+                                                               const double t) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("_updateSlipRate(auxiliaryField=" << auxiliaryField << ", t=" << t << ")");
 
@@ -589,8 +631,7 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlipRate(pylith::topo
     PetscErrorCode err = VecSet(_slipVecTotal, 0.0);
     PYLITH_CHECK_ERROR(err);
     const srcs_type::const_iterator rupturesEnd = _ruptures.end();
-    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter)
-    {
+    for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter) {
         err = VecSet(_slipVecRupture, 0.0);
         PYLITH_CHECK_ERROR(err);
 
@@ -612,34 +653,32 @@ void pylith::faults::FaultPoroDiffusionCohesiveKin::_updateSlipRate(pylith::topo
     err = VecGetArrayRead(_slipVecTotal, &slipRateArray);
     PYLITH_CHECK_ERROR(err);
 
-    for (PetscInt p = pStart, iSlipRate = 0; p < pEnd; ++p)
-    {
+    for (PetscInt p = pStart, iSlipRate = 0; p < pEnd; ++p) {
         const PetscInt slipRateDof = auxiliaryVisitor.sectionDof(p);
         const PetscInt slipRateOff = auxiliaryVisitor.sectionOffset(p);
-        for (PetscInt iDof = 0; iDof < slipRateDof; ++iDof, ++iSlipRate)
-        {
+        for (PetscInt iDof = 0; iDof < slipRateDof; ++iDof, ++iSlipRate) {
             auxiliaryArray[slipRateOff + iDof] = slipRateArray[iSlipRate];
         } // for
-    }     // for
+    } // for
     err = VecRestoreArrayRead(_slipVecTotal, &slipRateArray);
     PYLITH_CHECK_ERROR(err);
 
     pythia::journal::debug_t debug(pylith::utils::PyreComponent::getName());
-    if (debug.state())
-    {
+    if (debug.state()) {
         auxiliaryField->view("Fault auxiliary field after setting slip rate.");
     } // if
 
     PYLITH_METHOD_END;
 } // _updateSlipRate
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Set kernels for LHS residual.
-void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::feassemble::IntegratorInterface *integrator,
-                                                                  const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
-                                                                  const pylith::topology::Field &solution,
-                                                                  const pylith::problems::Physics::FormulationEnum formulation)
-{
+void
+pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::feassemble::IntegratorInterface *integrator,
+                                                                      const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
+                                                                      const pylith::topology::Field &solution,
+                                                                      const pylith::problems::Physics::FormulationEnum formulation) {
     PYLITH_METHOD_BEGIN;
     pythia::journal::debug_t debug(_FaultPoroDiffusionCohesiveKin::pyreComponent);
     debug << pythia::journal::at(__HERE__)
@@ -674,8 +713,7 @@ void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylit
     const PetscBdPointFunc f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault;
     const PetscBdPointFunc f1p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f1p_fault;
 
-    switch (formulation)
-    {
+    switch (formulation) {
     case pylith::problems::Physics::QUASISTATIC:
     {
         // Fault slip constraint equation.
@@ -726,20 +764,21 @@ void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylit
     PYLITH_METHOD_END;
 } // setKernelsLHSResidual
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Set kernels for LHS Jacobian.
-void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylith::feassemble::IntegratorInterface *integrator,
-                                                                  const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
-                                                                  const pylith::topology::Field &solution,
-                                                                  const pylith::problems::Physics::FormulationEnum formulation)
-{
+void
+pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylith::feassemble::IntegratorInterface *integrator,
+                                                                      const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
+                                                                      const pylith::topology::Field &solution,
+                                                                      const pylith::problems::Physics::FormulationEnum formulation) {
     PYLITH_METHOD_BEGIN;
     pythia::journal::debug_t debug(_FaultPoroDiffusionCohesiveKin::pyreComponent);
     debug << pythia::journal::at(__HERE__)
           << "setKernelsLHSJacobian(integrator=" << integrator << ", fault=" << typeid(fault).name()
           << ", solution=" << solution.getLabel() << ")" << pythia::journal::endl;
 
-    // Eight non-trivial kernels, 
+    // Eight non-trivial kernels,
     // Jful; Jfp_fp_f, Jfp_fe, Jfp_fu, Jfp_fp; Jfpp, Jfpp_f; Jflu
     std::vector<JacobianKernels> kernels(8);
 
@@ -762,7 +801,7 @@ void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylit
     const PetscBdPointJac Jf1p_fu = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf1p_fu;
     const PetscBdPointJac Jf2p_fu = NULL;
     const PetscBdPointJac Jf3p_fu = NULL;
-    
+
     const PetscBdPointJac Jf0p_fp = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fp;
     const PetscBdPointJac Jf1p_fp = NULL;
     const PetscBdPointJac Jf2p_fp = NULL;
@@ -789,8 +828,7 @@ void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylit
     const char *nameTraceStrain = "trace_strain";
     const char *nameFaultPressure = "fault_pressure";
 
-    switch (formulation)
-    {
+    switch (formulation) {
     case pylith::problems::Physics::QUASISTATIC:
         nameDispVel = "displacement";
         break;
@@ -827,5 +865,6 @@ void pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylit
 
     PYLITH_METHOD_END;
 } // setKernelsLHSJacobian
+
 
 // End of file
