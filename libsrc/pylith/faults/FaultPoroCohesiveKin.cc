@@ -348,9 +348,9 @@ pylith::faults::FaultPoroCohesiveKin::createAuxiliaryField(const pylith::topolog
      * - 4: solid_shear_modulus(1)
      * - numA - 1: slip(dim) OR slip_rate (dim)
      */
-    _auxiliaryFactory->addFaultUndrainedBulkModulus(); // 0
-    _auxiliaryFactory->addFaultShearModulus(); // 1
-    _auxiliaryFactory->addSkemptonCoef(); // 2
+    _auxiliaryFactory->addUndrainedBulkModulus(); // 0
+    _auxiliaryFactory->addShearModulus(); // 1
+    _auxiliaryFactory->addSkemptonCoefficient(); // 2
     _auxiliaryFactory->addUndrainedBulkModulus(); // 3
     _auxiliaryFactory->addShearModulus(); // 4
 

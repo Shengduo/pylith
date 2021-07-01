@@ -183,6 +183,9 @@ private:
     // PRIVATE MEMBERS /////////////////////////////////////////////////////////////////////////////////////////////////
 private:
 
+    bool _useBodyForce; ///< Flag to include body force term.
+    bool _useSource; ///< Flag to use source.
+    bool _useConstantPressureSource; ///< Flag to use constant pressure source.
     pylith::faults::AuxiliaryFactoryKinematic* _auxiliaryFactory; ///< Factory for auxiliary subfields.
     srcs_type _ruptures; ///< Array of kinematic earthquake ruptures.
     PetscVec _slipVecRupture; ///< PETSc local Vec to hold slip for one kinematic rupture.
