@@ -69,6 +69,8 @@ public:
             static void setKernelsLHSResidual(pylith::feassemble::IntegratorInterface *integrator,
                                               const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
                                               const pylith::topology::Field &solution,
+                                              const bool _useBodyForce,
+                                              const bool _useSource,
                                               const pylith::problems::Physics::FormulationEnum formulation);
 
             /** Set kernels for LHS Jacobian.
@@ -277,7 +279,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createIntegrator(const pylith::to
     integrator->setLabelValue(getInterfaceId());
     integrator->setSurfaceMarkerLabel(getSurfaceMarkerLabel());
 
-    _FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(integrator, *this, solution, _formulation);
+    _FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(integrator, *this, solution, _useBodyForce, _useSource, _formulation);
     _FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(integrator, *this, solution, _formulation);
     // No state variables.
     // _FaultPoroDiffusionCohesiveKin::setKernelsDerivedFields(integrator, *this, solution);
@@ -678,6 +680,8 @@ void
 pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::feassemble::IntegratorInterface *integrator,
                                                                       const pylith::faults::FaultPoroDiffusionCohesiveKin &fault,
                                                                       const pylith::topology::Field &solution,
+                                                                      const bool _useBodyForce,
+                                                                      const bool _useSource,
                                                                       const pylith::problems::Physics::FormulationEnum formulation) {
     PYLITH_METHOD_BEGIN;
     pythia::journal::debug_t debug(_FaultPoroDiffusionCohesiveKin::pyreComponent);
@@ -731,7 +735,7 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::fe
         f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body_source;
         break;
     default:
-        PYLITH_COMPONENT_LOGICERROR("Unknown case (bitUse=" << bitUse << ") for f0p/f0p_fault residual kernels.");
+        PYLITH_COMPONENT_LOGICERROR("Unknown case (bitUse=" << bitUse << ") for f0p f0p_fault residual kernels.");
     } // switch
 
     const PetscBdPointFunc f1p = NULL;
