@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------
 #
 
-# @file pylith/problems/SolnDispPresTracStrainiLagrange.py
+# @file pylith/problems/SolnDispPresTracStrainLagrange.py
 #
 # @brief Python subfields container with displacement, pore pressure, trace strain subfields and fault Lagrange.
 
@@ -47,6 +47,10 @@ class SolnDispPresTracStrainLagrange(PetscComponent):
     lagrangeFault = pythia.pyre.inventory.facility("lagrange_fault", family="soln_subfield", factory=SubfieldLagrangeFault)
     lagrangeFault.meta['tip'] = "Fault Lagrange multiplier subfield."
 
+    from .SubfieldFaultPressure import SubfieldFaultPressure
+    faultPressure = pythia.pyre.inventory.facility("fault_pressure", family="soln_subfield", factory=SubfieldFaultPressure)
+    faultPressure.meta['tip'] = "Fault Pressure subfield."
+
     # PUBLIC METHODS /////////////////////////////////////////////////////
 
     def __init__(self, name="solndispprestracstrainlagrange"):
@@ -64,7 +68,7 @@ class SolnDispPresTracStrainLagrange(PetscComponent):
         components() to insure order is [displacement, pressure, trace_strain].
 
         """
-        return [self.displacement, self.pressure, self.traceStrain, self.lagrangeFault]
+        return [self.displacement, self.pressure, self.traceStrain, self.lagrangeFault, self.faultPressure]
 
 
 class Solution(SolutionBase):

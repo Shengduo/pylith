@@ -701,16 +701,40 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::fe
      * ----Shengduo
      */
 
-    // Pressure constraint
-    const PetscBdPointFunc f0p = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p;
-    const PetscBdPointFunc f1p = NULL;
-
     // Trace_strain constraint
     const PetscBdPointFunc f0e = NULL;
     const PetscBdPointFunc f1e = NULL;
 
-    // Fault_pressure constraint
-    const PetscBdPointFunc f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault;
+    // Pressure constraint and Fault_pressure constraint
+    PetscBdPointFunc f0p = NULL;
+    PetscBdPointFunc f0p_fault = NULL;
+
+    const int bitBodyForce = _useBodyForce ? 0x1 : 0x0;
+    const int bitSource = _useSource ? 0x2 : 0x0;
+    const int bitUse = bitBodyForce | bitSource;
+
+    switch (bitUse) {
+    case 0x0:
+        f0p = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p;
+        f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault;
+        break;
+    case 0x1:
+        f0p = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_body;
+        f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body;
+        break;
+    case 0x2:
+        f0p = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p;
+        f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_source;
+        break;
+    case 0x3:
+        f0p = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_body;
+        f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body_source;
+        break;
+    default:
+        PYLITH_COMPONENT_LOGICERROR("Unknown case (bitUse=" << bitUse << ") for f0p/f0p_fault residual kernels.");
+    } // switch
+
+    const PetscBdPointFunc f1p = NULL;
     const PetscBdPointFunc f1p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f1p_fault;
 
     switch (formulation) {
