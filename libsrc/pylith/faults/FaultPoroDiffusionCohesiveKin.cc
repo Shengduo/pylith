@@ -735,7 +735,7 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSResidual(pylith::fe
         f0p_fault = pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body_source;
         break;
     default:
-        PYLITH_COMPONENT_LOGICERROR("Unknown case (bitUse=" << bitUse << ") for f0p f0p_fault residual kernels.");
+        PYLITH_JOURNAL_LOGICERROR("Unknown case (bitUse=" << bitUse << ") for f0p f0p_fault residual kernels.");
     } // switch
 
     const PetscBdPointFunc f1p = NULL;

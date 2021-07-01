@@ -193,7 +193,7 @@ pylith::faults::AuxiliaryFactoryKinematic::addSlipRate(void) {
 // --------------------------------------------------------------------
 // Add undrained bulk modulus subfield to auxiliary fields.
 void
-pylith::materials::AuxiliaryFactoryKinematic::addUndrainedBulkModulus(void) { // UndrainedBulkModulus
+pylith::faults::AuxiliaryFactoryKinematic::addUndrainedBulkModulus(void) { // UndrainedBulkModulus
     PYLITH_METHOD_BEGIN;
     PYLITH_JOURNAL_DEBUG("addUndrainedBulkModulus(void)");
 
@@ -220,7 +220,7 @@ pylith::materials::AuxiliaryFactoryKinematic::addUndrainedBulkModulus(void) { //
 // ---------------------------------------------------------------------------------------------------------------------
 // Add shear modulus subfield to auxiliary fields.
 void
-pylith::materials::AuxiliaryFactoryKinematic::addShearModulus(void) {
+pylith::faults::AuxiliaryFactoryKinematic::addShearModulus(void) {
     PYLITH_METHOD_BEGIN;
     PYLITH_JOURNAL_DEBUG("addShearModulus(void)");
 
@@ -247,7 +247,7 @@ pylith::materials::AuxiliaryFactoryKinematic::addShearModulus(void) {
 // ---------------------------------------------------------------------
 // Add Skempton coefficient subfield to auxiliary fields.
 void
-pylith::materials::AuxiliaryFactoryKinematic::addSkemptonCoefficient(void) { // skemptonCoefficient
+pylith::faults::AuxiliaryFactoryKinematic::addSkemptonCoefficient(void) { // skemptonCoefficient
     PYLITH_METHOD_BEGIN;
     PYLITH_JOURNAL_DEBUG("addSkemptonCoefficient(void)");
 
@@ -265,7 +265,10 @@ pylith::materials::AuxiliaryFactoryKinematic::addSkemptonCoefficient(void) { // 
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
-    pylith::faults::Query::skemptonCoefficientFromInput(subfieldName, this);
+
+    // ** TO DO **
+    // Is this step correct?
+    this->setSubfieldQuery(subfieldName);
 
     PYLITH_METHOD_END;
 } // addSkemptonCoefficient
@@ -408,7 +411,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addPermeabilityTangential(void) {
     // ** TO DO **
     // Please verify this following line
     // Permeability scale should be m^2
-    const PylithReal permeabilityScale = (_normalizer->getLengthScale())^2;
+    const PylithReal lengthScale = _normalizer->getLengthScale();
+    const PylithReal permeabilityScale = lengthScale*lengthScale;
 
     pylith::topology::Field::Description description;
     description.label = subfieldName;
@@ -441,7 +445,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addPermeabilityNormal(void) {
     // ** TO DO **
     // Please verify this following line
     // Permeability scale should be m^2
-    const PylithReal permeabilityScale = (_normalizer->getLengthScale())^2;
+    const PylithReal lengthScale = _normalizer->getLengthScale();
+    const PylithReal permeabilityScale = lengthScale*lengthScale;
 
     pylith::topology::Field::Description description;
     description.label = subfieldName;
@@ -635,7 +640,7 @@ pylith::faults::AuxiliaryFactoryKinematic::addBodyForce(void) {
     // ** TO DO **
     // Verify this line
     // The scale should be pa / m
-    const PylithReal bodyForceScale = normalizer->getPressureScale() / _normalizer->getLengthScale();
+    const PylithReal bodyForceScale = _normalizer->getPressureScale() / _normalizer->getLengthScale();
 
     pylith::topology::Field::Description description;
     description.label = fieldName;
