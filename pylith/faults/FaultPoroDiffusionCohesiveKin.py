@@ -54,6 +54,15 @@ class FaultPoroDiffusionCohesiveKin(FaultCohesive, ModuleFaultPoroDiffusionCohes
     #outputManager = pythia.pyre.inventory.facility("output", family="output_manager", factory=OutputFaultKin)
     #output.meta['tip'] = "Output manager associated with fault information."
 
+    useBodyForce = pythia.pyre.inventory.bool("use_body_force", default=False)
+    useBodyForce.meta['tip'] = "Include body force term in poroelastic fault equation."
+
+    useSource = pythia.pyre.inventory.bool("use_source", default=False)
+    useSource.meta['tip'] = "Include source_density term in poroelastic fault equation."
+
+    useConstantPressureSource = pythia.pyre.inventory.bool("use_constant_pressure_source", default=False)
+    useConstantPressureSource.meta['tip'] = "Include constant_pressure_source term in poroelastic fault equation."
+
     def __init__(self, name="faultporodiffusioncohesivekin"):
         """Initialize configuration.
         """
@@ -75,6 +84,9 @@ class FaultPoroDiffusionCohesiveKin(FaultCohesive, ModuleFaultPoroDiffusionCohes
         ModuleFaultPoroDiffusionCohesiveKin.setEqRuptures(
             self, self.eqRuptures.inventory.facilityNames(), self.eqRuptures.components())
 
+        ModuleFaultPoroDiffusionCohesiveKin.useBodyForce(self, self.useBodyForce)
+        ModuleFaultPoroDiffusionCohesiveKin.useSourceDensity(self, self.useSourceDensity)
+        ModuleFaultPoroDiffusionCohesiveKin.useConstantPressureSource(self, self.useConstantPressureSource)
         return
 
     def verifyConfiguration(self):
