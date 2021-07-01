@@ -281,7 +281,6 @@ pylith::faults::AuxiliaryFactoryKinematic::addThickness(void) {
     PYLITH_JOURNAL_DEBUG("addThickness(void)");
 
     const char* subfieldName = "thickness";
-
     const PylithReal lengthScale = _normalizer->getLengthScale();
 
     pylith::topology::Field::Description description;
@@ -290,8 +289,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addThickness(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = lengthScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = lengthScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -321,8 +320,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addPorosity(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = noScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = noScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -354,8 +353,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addBetaP(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = betaScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = betaScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -384,8 +383,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addBetaSigma(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = betaScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = betaScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -417,8 +416,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addPermeabilityTangential(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = permeabilityScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = permeabilityScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -450,8 +449,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addPermeabilityNormal(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = permeabilityScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = permeabilityScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -485,8 +484,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addFluidViscosity(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = fluiViscosityScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = fluidViscosityScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -516,8 +515,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addBulkModulusNegative(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = bulkModulusScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = bulkModulusScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -547,8 +546,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addBulkModulusPositive(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = bulkModulusScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = bulkModulusScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -578,8 +577,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addShearModulusNegative(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = shearModulusScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = shearModulusScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -609,8 +608,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addShearModulusPositive(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = shearModulusScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = shearModulusScale;
     description.validator = pylith::topology::FieldQuery::validatorPositive;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
@@ -680,8 +679,8 @@ pylith::faults::AuxiliaryFactoryKinematic::addSource(void) {
     description.vectorFieldType = pylith::topology::Field::SCALAR;
     description.numComponents = 1;
     description.componentNames.resize(1);
-    description.componentNames[0] = subfieldName
-                                    description.scale = sourceScale;
+    description.componentNames[0] = subfieldName;
+    description.scale = sourceScale;
     description.validator = pylith::topology::FieldQuery::validatorNonnegative;
 
     _field->subfieldAdd(description, getSubfieldDiscretization(subfieldName));
