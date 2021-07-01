@@ -111,7 +111,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::~FaultPoroDiffusionCohesiveKin(vo
 // ---------------------------------------------------------------------------------------------------------------------
 // Deallocate PETSc and local data structures.
 void
-pylith::faults::FaultPorodiffusionCohesiveKin::deallocate(void) {
+pylith::faults::FaultPoroDiffusionCohesiveKin::deallocate(void) {
     FaultCohesive::deallocate();
 
     PetscErrorCode err = VecDestroy(&_slipVecRupture);
@@ -446,7 +446,7 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::createAuxiliaryField(const pylith
         _auxiliaryFactory->addSource(); // +1
     } // if
     if (_useConstantPressureSource) {
-        auxiliaryFactory->addConstantPressureSource(); // +1
+        _auxiliaryFactory->addConstantPressureSource(); // +1
     }
     // :ATTENTION: The order for adding subfields must match the order of the auxiliary fields in the FE kernels.
 
