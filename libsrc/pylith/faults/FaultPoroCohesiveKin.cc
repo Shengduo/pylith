@@ -236,7 +236,7 @@ pylith::faults::FaultPoroCohesiveKin::createIntegrator(const pylith::topology::F
 // Create constraint for buried fault edges and faces.
 // ** TO DO **
 // Check if new constraint needed for poro-fault
-pylith::feassemble::Constraint*
+pylith::feassemble::Constraint *
 pylith::faults::FaultPoroCohesiveKin::createConstraint(const pylith::topology::Field& solution) {
     PYLITH_METHOD_BEGIN;
     PYLITH_COMPONENT_DEBUG("createConstraint(solution="<<solution.getLabel()<<")");
@@ -255,7 +255,7 @@ pylith::faults::FaultPoroCohesiveKin::createConstraint(const pylith::topology::F
         constrainedDOF[c] = c;
     }
     // Make new label for cohesive edges and faces
-    PetscDM dm = solution.dmMesh();
+    PetscDM dm = solution.getDM();
     PetscDMLabel buriedLabel = NULL;
     PetscDMLabel buriedCohesiveLabel = NULL;
     PetscIS pointIS = NULL;
@@ -325,7 +325,7 @@ pylith::faults::FaultPoroCohesiveKin::createAuxiliaryField(const pylith::topolog
 
     // Set default discretization of auxiliary subfields to match lagrange_multiplier_fault subfield in solution.
     assert(_auxiliaryFactory);
-    const pylith::topology::FieldBase::Discretization& discretization = solution.subfieldInfo("lagrange_multiplier_fault").fe;
+    const pylith::topology::FieldBase::Discretization& discretization = solution.getSubfieldInfo("lagrange_multiplier_fault").fe;
     _auxiliaryFactory->setSubfieldDiscretization("default", discretization.basisOrder, discretization.quadOrder, -1,
                                                  discretization.cellBasis, discretization.isBasisContinuous, discretization.feSpace);
 
@@ -385,13 +385,13 @@ pylith::faults::FaultPoroCohesiveKin::createAuxiliaryField(const pylith::topolog
     for (srcs_type::iterator r_iter = _ruptures.begin(); r_iter != rupturesEnd; ++r_iter) {
         KinSrc* src = r_iter->second;
         assert(src);
-        src->initialize(*auxiliaryField, *_normalizer, solution.mesh().getCoordSys());
+        src->initialize(*auxiliaryField, *_normalizer, solution.getMesh().getCoordSys());
     } // for
 
     // Create local PETSc vector to hold current slip.
     PetscErrorCode err = 0;
-    err = DMCreateLocalVector(auxiliaryField->dmMesh(), &_slipVecRupture);PYLITH_CHECK_ERROR(err);
-    err = DMCreateLocalVector(auxiliaryField->dmMesh(), &_slipVecTotal);PYLITH_CHECK_ERROR(err);
+    err = DMCreateLocalVector(auxiliaryField->getDM(), &_slipVecRupture);PYLITH_CHECK_ERROR(err);
+    err = DMCreateLocalVector(auxiliaryField->getDM(), &_slipVecTotal);PYLITH_CHECK_ERROR(err);
 
     PYLITH_METHOD_RETURN(auxiliaryField);
 } // createAuxiliaryField
@@ -486,7 +486,7 @@ pylith::faults::FaultPoroCohesiveKin::_updateSlip(pylith::topology::Field* auxil
 
     // Transfer slip values from local PETSc slip vector to fault auxiliary field.
     PetscInt pStart = 0, pEnd = 0;
-    err = PetscSectionGetChart(auxiliaryField->localSection(), &pStart, &pEnd);PYLITH_CHECK_ERROR(err);
+    err = PetscSectionGetChart(auxiliaryField->getLocalSection(), &pStart, &pEnd);PYLITH_CHECK_ERROR(err);
 
     pylith::topology::VecVisitorMesh auxiliaryVisitor(*auxiliaryField, "slip");
     PylithScalar* auxiliaryArray = auxiliaryVisitor.localArray();
@@ -536,7 +536,7 @@ pylith::faults::FaultPoroCohesiveKin::_updateSlipRate(pylith::topology::Field* a
 
     // Transfer slip values from local PETSc slip vector to fault auxiliary field.
     PetscInt pStart = 0, pEnd = 0;
-    err = PetscSectionGetChart(auxiliaryField->localSection(), &pStart, &pEnd);PYLITH_CHECK_ERROR(err);
+    err = PetscSectionGetChart(auxiliaryField->getLocalSection(), &pStart, &pEnd);PYLITH_CHECK_ERROR(err);
 
     pylith::topology::VecVisitorMesh auxiliaryVisitor(*auxiliaryField, "slip_rate");
     PylithScalar* auxiliaryArray = auxiliaryVisitor.localArray();

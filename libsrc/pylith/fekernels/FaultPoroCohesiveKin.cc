@@ -197,7 +197,7 @@ pylith::fekernels::_FaultPoroCohesiveKin::lagrange_sOff(const PylithInt sOff[],
 
 // ----------------------------------------------------------------------
 // Get offset in s where pressure_fault subfield starts.
-// Seems that the offset contributed by Lagrange multiplier does not need *2 
+// Seems that the offset contributed by Lagrange multiplier does not need *2
 // ** NEEDS VERFICATION **
 PylithInt
 pylith::fekernels::_FaultPoroCohesiveKin::fault_pressure_sOff(const PylithInt sOff[],
@@ -208,7 +208,7 @@ pylith::fekernels::_FaultPoroCohesiveKin::fault_pressure_sOff(const PylithInt sO
         off += 2 * (sOff[i + 1] - sOff[i]);
     } // for
 
-    off += (sOff[numS - 1] - sOff[numS - 2]; 
+    off += (sOff[numS - 1] - sOff[numS - 2]);
     return off;
 } // fault_pressure_sOff
 
@@ -460,7 +460,7 @@ pylith::fekernels::FaultPoroCohesiveKin::f0p_fault(const PylithInt dim,
     const PylithScalar M_u_prime = faultUndrainedBulkModulus + 4. * faultShearModulus / 3.;
 
     f0[fOffp_fault] += faultPressure - faultSkemptonCoef * faultUndrainedBulkModulus / M_u_prime *
-            (faultShearModulus * M_u / shearModulus * (traceStrainN + traceStrainP) * 3. / 2. + (shearModulus - faultShearModulus) / shearModulus * (stress_nnN + stress_nnP) / 2.);
+                       (faultShearModulus * M_u / shearModulus * (traceStrainN + traceStrainP) * 3. / 2. + (shearModulus - faultShearModulus) / shearModulus * (stress_nnN + stress_nnP) / 2.);
 
 } // f0p_fault
 
@@ -745,15 +745,15 @@ pylith::fekernels::FaultPoroCohesiveKin::Jf1p_fu(const PylithInt dim,
     const PylithInt gOffN = 0;
     const PylithInt gOffP = gOffN + spaceDim;
     const PylithInt ncols = spaceDim;
-    const PylithScalar temp = - faultSkemptonCoef *
+    const PylithScalar temp = -faultSkemptonCoef *
                               faultUndrainedBulkModulus *
                               (shearModulus - faultShearModulus) /
-                              M_u_prime
+                              M_u_prime;
 
     for (PylithInt i = 0; i < spaceDim; ++i) {
         for (PylithInt j = 0; j < spaceDim; ++j) {
             Jf1[(gOffN + i) * ncols + j] += temp * n[i] * n[j];
-            Jf1[(gOffP + i) * ncols + j] += temp * n[i] * n[j]; 
+            Jf1[(gOffP + i) * ncols + j] += temp * n[i] * n[j];
         }
     }
 
