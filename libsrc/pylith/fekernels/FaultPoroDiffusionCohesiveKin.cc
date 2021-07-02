@@ -221,13 +221,13 @@ pylith::fekernels::_FaultPoroDiffusionCohesiveKin::fault_pressure_sOff(const Pyl
         off += 2 * (sOff[i + 1] - sOff[i]);
     } // for
 
-    off += (sOff[numS - 1] - sOff[numS - 2]; 
+    off += (sOff[numS - 1] - sOff[numS - 2]); 
     return off;
 } // fault_pressure_sOff
 
 // ----------------------------------------------------------------------
 // Compute tangential directions from reference direction (first and second choice) and normal direction in 3-D.
-void pylith::fekernels::_FaultPoroDiffuionCohesiveKin::tangential_directions(const PylithInt dim,
+void pylith::fekernels::_FaultPoroDiffusionCohesiveKin::tangential_directions(const PylithInt dim,
                                                                              const PylithScalar refDir1[],
                                                                              const PylithScalar refDir2[],
                                                                              const PylithScalar normDir[],
@@ -886,6 +886,7 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_source(const Py
     const PylithInt i_shear_modulus_negative = 8;
     const PylithInt i_bulk_modulus_positive = 9;
     const PylithInt i_shear_modulus_positive = 10;
+    const PylithInt i_body_force = numA - 3;
     const PylithInt i_source = numA - 2;
 
     const PylithScalar thickness = a[aOff[i_thickness]];
@@ -952,8 +953,8 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_source(const Py
 
     f0[fOffp_fault] += porosity * (betaP * (pressureN_t + 2. * pressureFault_t + pressureP_t) / 4. +
                                    betaSigma * (stress_nnN + stress_nnP) / 2.) +
-                           permeabilityTangential / fluidViscosity  - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / thickness ^
-                       2 - source;
+                           permeabilityTangential / fluidViscosity  - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / thickness / thickness
+                            - source;
 
 } // f0p_fault_source
 
@@ -1086,8 +1087,8 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::f0p_fault_body_source(con
 
     f0[fOffp_fault] += porosity * (betaP * (pressureN_t + 2. * pressureFault_t + pressureP_t) / 4. +
                                    betaSigma * (stress_nnN + stress_nnP) / 2.) +
-                           permeabilityTangential / fluidViscosity * bodyForce_div - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) / thickness ^
-                       2 - source;
+                           permeabilityTangential / fluidViscosity * bodyForce_div - permeabilityNormal / fluidViscosity * (pressureP - 2. * pressureFault + pressureN) 
+                           / thickness / thickness - source;
 
 } // f0p_fault_body_source
 
@@ -1246,7 +1247,7 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fp_f(const PylithInt
     const PylithScalar permeabilityNormal = a[aOff[i_permeabilility_normal]];
     const PylithScalar fluidViscosity = a[aOff[i_fluid_viscosity]];
 
-    Jf0[gOff] += 2 permeabilityNormal / (fluidViscosity * thickness ^ 2) + 2. * porosity * betaP * s_t;
+    Jf0[gOff] += 2. * permeabilityNormal / (fluidViscosity * thickness * thickness) + 2. * porosity * betaP * s_tshift;
 
 } // Jf0p_fp_f
 
@@ -1481,8 +1482,8 @@ void pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fp(const PylithInt d
     const PylithInt gOffN = 0;
     const PylithInt gOffP = gOffN + 1;
 
-    Jf0[gOffN] += s_tshift * porosity * betaP / 4. - permeabilityNormal / fluidViscosity / thickness ^ 2;
-    Jf0[gOffP] += s_tshift * porosity * betaP / 4. - permeabilityNormal / fluidViscosity / thickness ^ 2;
+    Jf0[gOffN] += s_tshift * porosity * betaP / 4. - permeabilityNormal / fluidViscosity / thickness / thickness;
+    Jf0[gOffP] += s_tshift * porosity * betaP / 4. - permeabilityNormal / fluidViscosity / thickness / thickness;
 
 } // Jf0p_fp
 

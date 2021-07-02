@@ -83,6 +83,7 @@ libpylith_la_SOURCES = \
 	fekernels/AbsorbingDampers.cc \
 	fekernels/FaultCohesiveKin.cc \
 	fekernels/FaultPoroCohesiveKin.cc \
+	fekernels/FaultPoroDiffusionCohesiveKin.cc \
 	materials/Material.cc \
 	materials/Elasticity.cc \
 	materials/RheologyElasticity.cc \
