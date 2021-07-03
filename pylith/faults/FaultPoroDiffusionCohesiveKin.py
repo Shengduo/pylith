@@ -85,7 +85,7 @@ class FaultPoroDiffusionCohesiveKin(FaultCohesive, ModuleFaultPoroDiffusionCohes
             self, self.eqRuptures.inventory.facilityNames(), self.eqRuptures.components())
 
         ModuleFaultPoroDiffusionCohesiveKin.useBodyForce(self, self.useBodyForce)
-        ModuleFaultPoroDiffusionCohesiveKin.useSourceDensity(self, self.useSourceDensity)
+        ModuleFaultPoroDiffusionCohesiveKin.useSource(self, self.useSource)
         ModuleFaultPoroDiffusionCohesiveKin.useConstantPressureSource(self, self.useConstantPressureSource)
         return
 

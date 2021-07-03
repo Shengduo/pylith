@@ -54,6 +54,42 @@ public:
 
             %clear(const char* const* names, const int numNames);
 
+            /** Include body force?
+             *
+             * @param[in] value Flag indicating to include body force term.
+             */
+            void useBodyForce(const bool value);
+
+            /** Include body force?
+             *
+             * @returns True if including body force term, false otherwise.
+             */
+            bool useBodyForce(void) const;
+
+            /** Include source?
+             *
+             * @param[in] value Flag indicating to include source term.
+             */
+            void useSource(const bool value);
+
+            /** Include source?
+             *
+             * @returns True if including source term, false otherwise.
+             */
+            bool useSource(void) const;
+
+            /** Include constant pressure source?
+             *
+             * @param[in] value Flag indicating to include constant pressure source term.
+             */
+            void useConstantPressureSource(const bool value);
+
+            /** Include constant pressure source?
+             *
+             * @returns True if including constant pressure source term, false otherwise.
+             */
+            bool useConstantPressureSource(void) const;
+
             /** Verify configuration is acceptable.
              *
              * @param[in] solution Solution field.
@@ -118,6 +154,22 @@ protected:
              */
             void _updateKernelConstants(const PylithReal dt);
 
+
+            /** Update slip subfield in auxiliary field at beginning of time step.
+             *
+             * @param[out] auxiliaryField Auxiliary field.
+             * @param[in] t Current time.
+             */
+            void _updateSlip(pylith::topology::Field* auxiliaryField,
+                            const double t);
+
+            /** Update slip rate subfield in auxiliary field at beginning of time step.
+             *
+             * @param[out] auxiliaryField Auxiliary field.
+             * @param[in] t Current time.
+             */
+            void _updateSlipRate(pylith::topology::Field* auxiliaryField,
+                                const double t);
         }; // class FaultPoroDiffusionCohesiveKin
 
     } // faults
