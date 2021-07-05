@@ -83,6 +83,12 @@ public:
      */
     void addLagrangeMultiplierFault(const pylith::topology::FieldBase::Discretization& discretization);
 
+    /** Add fault pressure subfield to solution field.
+     *
+     * @param[in] discretization Discretization for fault pressure subfield.
+     */
+    void addFaultPressure(const pylith::topology::FieldBase::Discretization& discretization);
+
     /** Add temperature subfield to solution field.
      *
      * @param[in] discretization Discretization for temperature subfield.

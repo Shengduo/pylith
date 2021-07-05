@@ -514,5 +514,47 @@ pylith::problems::Problem::_setupSolution(void) {
     PYLITH_METHOD_END;
 } // _setupSolution
 
+// ** TO DO **
+// Verify the implementation of the following function, especially about the dimensions, 
+// since lagrange_fault_multiplier is of dim spaceDim while fault_pressure is of dimension 1.
+// ---------------------------------------------------------------------------------------------------------------------
+// Setup field so fault pressure subfield is limited to degrees of freedom associated with the cohesive cells.
+void
+pylith::problems::Problem::_setupFaultPressure(void) {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_COMPONENT_DEBUG("Problem::_setupFaultPressure()");
+
+    assert(_solution->hasSubfield("fault_pressure"));
+
+    PetscDMLabel cohesiveLabel = NULL;
+    PylithInt dim = 0;
+    PylithInt pStart = 0;
+    PylithInt pEnd = 0;
+    PylithInt pMax = 0;
+    PetscErrorCode err;
+
+    PetscDM dmSoln = _solution->getDM();assert(dmSoln);
+    err = DMGetDimension(dmSoln, &dim);PYLITH_CHECK_ERROR(err);
+    err = DMCreateLabel(dmSoln, "cohesive interface");PYLITH_CHECK_ERROR(err);
+    err = DMGetLabel(dmSoln, "cohesive interface", &cohesiveLabel);PYLITH_CHECK_ERROR(err);
+    for (PylithInt iDim = 0; iDim <= dim; ++iDim) {
+        err = DMPlexGetHeightStratum(dmSoln, iDim, &pStart, &pEnd);PYLITH_CHECK_ERROR(err);
+        err = DMPlexGetSimplexOrBoxCells(dmSoln, iDim, NULL, &pMax);PYLITH_CHECK_ERROR(err);
+        for (PylithInt p = pMax; p < pEnd; ++p) {
+            err = DMLabelSetValue(cohesiveLabel, p, 1);PYLITH_CHECK_ERROR(err);
+        } // for
+    } // for
+
+    // Reset discretization (FE), now using label.
+    const pylith::topology::Field::SubfieldInfo& faultPressureInfo = _solution->getSubfieldInfo("fault_pressure");
+    PetscFE fe = NULL;
+    err = DMGetField(dmSoln, faultPressureInfo.index, NULL, (PetscObject*)&fe);PYLITH_CHECK_ERROR(err);assert(fe);
+    err = PetscObjectReference((PetscObject)fe);PYLITH_CHECK_ERROR(err);
+    err = DMSetField(dmSoln, faultPressureInfo.index, cohesiveLabel, (PetscObject)fe);PYLITH_CHECK_ERROR(err);
+
+    err = PetscFEDestroy(&fe);PYLITH_CHECK_ERROR(err);
+
+    PYLITH_METHOD_END;
+} // _setupFaultPressure
 
 // End of file
