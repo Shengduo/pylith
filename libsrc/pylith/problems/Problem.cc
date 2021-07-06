@@ -490,6 +490,7 @@ pylith::problems::Problem::_setupSolution(void) {
     assert(_solution);
     _solution->subfieldsSetup();
     _solution->createDiscretization();
+    std::cout<< "Created Discretization! \n";
 
     // Mark fault fields as implicit.
     const pylith::string_vector& subfieldNames = _solution->getSubfieldNames();

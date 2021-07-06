@@ -225,13 +225,17 @@ pylith::faults::FaultPoroDiffusionCohesiveKin::verifyConfiguration(const pylith:
      * Implement or verify field::hasSubfield("pressure", "trace_strain", "fault_pressure") is implemented
      * Seems that this is fine, at least no need to change the function field::hasSubfield
      */
+    // ** TO DO **
+    // Seems that pressure is not part of the fault, but part of poroelastic material implementation
+    /**
     if (!solution.hasSubfield("pressure")) {
         std::ostringstream msg;
         msg << "Cannot find 'pressure' subfield in solution field for poroelastic diffusive fault implementation in component '"
             << PyreComponent::getIdentifier() << "'.";
         throw std::runtime_error(msg.str());
     } // if
-
+    */
+   
     if (!solution.hasSubfield("fault_pressure")) {
         std::ostringstream msg;
         msg << "Cannot find 'fault_pressure' subfield in solution field for poroelastic diffusive fault implementation in component '"
