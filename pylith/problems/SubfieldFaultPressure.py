@@ -48,7 +48,8 @@ class SubfieldFaultPressure(SolutionSubfield):
         """Initialize subfield metadata.
         """
         from pylith.topology.Field import Field
-        self.vectorFieldType = Field.SCALAR
+        self.dimension = spaceDim - 1
+        self.vectorFieldType = Field.SCALARquit
         self.scale = normalizer.getPressureScale()
         self._setComponents(spaceDim)
         return
