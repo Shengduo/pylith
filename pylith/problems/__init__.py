@@ -33,6 +33,7 @@ __all__ = [
     "SolnDispVelLagrange",
     "SolnDispVel",
     "SolnDispPresTracStrain",
+    "SolnDispPresTracStrainLag",
     "SolnDispPresTracStrainLagrange",
     "SolnDispPresVel",
     "SolutionSubfield",
