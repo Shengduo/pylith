@@ -51,6 +51,7 @@ class SubfieldFaultPressure(SolutionSubfield):
         self.dimension = spaceDim - 1
         self.vectorFieldType = Field.SCALAR
         self.scale = normalizer.getPressureScale()
+        self.isFaultOnly = True
         self._setComponents(spaceDim)
         return
 
