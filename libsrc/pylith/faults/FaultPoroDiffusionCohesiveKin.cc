@@ -818,9 +818,9 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylith::fe
           << "setKernelsLHSJacobian(integrator=" << integrator << ", fault=" << typeid(fault).name()
           << ", solution=" << solution.getLabel() << ")" << pythia::journal::endl;
 
-    // Eight non-trivial kernels,
-    // Jful; Jfp_fp_f, Jfp_fe, Jfp_fu, Jfp_fp; Jfpp, Jfpp_f; Jflu
-    std::vector<JacobianKernels> kernels(8);
+    // Seven non-trivial kernels,
+    // Jful; Jfp_fp_f, Jfp_fl, Jfp_fp; Jfpp, Jfpp_f; Jflu
+    std::vector<JacobianKernels> kernels(7);
 
     const PetscBdPointJac Jf0ul = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0ul;
     const PetscBdPointJac Jf1ul = NULL;
@@ -832,15 +832,10 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylith::fe
     const PetscBdPointJac Jf2p_fp_f = NULL;
     const PetscBdPointJac Jf3p_fp_f = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf3p_fp_f;
 
-    const PetscBdPointJac Jf0p_fe = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fe;
-    const PetscBdPointJac Jf1p_fe = NULL;
-    const PetscBdPointJac Jf2p_fe = NULL;
-    const PetscBdPointJac Jf3p_fe = NULL;
-
-    const PetscBdPointJac Jf0p_fu = NULL;
-    const PetscBdPointJac Jf1p_fu = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf1p_fu;
-    const PetscBdPointJac Jf2p_fu = NULL;
-    const PetscBdPointJac Jf3p_fu = NULL;
+    const PetscBdPointJac Jf0p_fl = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fl;;
+    const PetscBdPointJac Jf1p_fl = NULL;
+    const PetscBdPointJac Jf2p_fl = NULL;
+    const PetscBdPointJac Jf3p_fl = NULL;
 
     const PetscBdPointJac Jf0p_fp = pylith::fekernels::FaultPoroDiffusionCohesiveKin::Jf0p_fp;
     const PetscBdPointJac Jf1p_fp = NULL;
@@ -893,12 +888,11 @@ pylith::faults::_FaultPoroDiffusionCohesiveKin::setKernelsLHSJacobian(pylith::fe
 
     kernels[0] = JacobianKernels(nameDispVel, nameLagrangeMultiplier, Jf0ul, Jf1ul, Jf2ul, Jf3ul);
     kernels[1] = JacobianKernels(nameFaultPressure, nameFaultPressure, Jf0p_fp_f, Jf1p_fp_f, Jf2p_fp_f, Jf3p_fp_f);
-    kernels[2] = JacobianKernels(nameFaultPressure, nameTraceStrain, Jf0p_fe, Jf1p_fe, Jf2p_fe, Jf3p_fe);
-    kernels[3] = JacobianKernels(nameFaultPressure, nameDispVel, Jf0p_fu, Jf1p_fu, Jf2p_fu, Jf3p_fu);
-    kernels[4] = JacobianKernels(nameLagrangeMultiplier, nameDispVel, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
-    kernels[5] = JacobianKernels(namePressure, namePressure, Jf0pp, Jf1pp, Jf2pp, Jf3pp);
-    kernels[6] = JacobianKernels(nameFaultPressure, namePressure, Jf0p_fp, Jf1p_fp, Jf2p_fp, Jf3p_fp);
-    kernels[7] = JacobianKernels(namePressure, nameFaultPressure, Jf0pp_f, Jf1pp_f, Jf2pp_f, Jf3pp_f);
+    kernels[2] = JacobianKernels(nameFaultPressure, nameLagrangeMultiplier, Jf0p_fl, Jf1p_fl, Jf2p_fl, Jf3p_fl);
+    kernels[3] = JacobianKernels(nameLagrangeMultiplier, nameDispVel, Jf0lu, Jf1lu, Jf2lu, Jf3lu);
+    kernels[4] = JacobianKernels(namePressure, namePressure, Jf0pp, Jf1pp, Jf2pp, Jf3pp);
+    kernels[5] = JacobianKernels(nameFaultPressure, namePressure, Jf0p_fp, Jf1p_fp, Jf2p_fp, Jf3p_fp);
+    kernels[6] = JacobianKernels(namePressure, nameFaultPressure, Jf0pp_f, Jf1pp_f, Jf2pp_f, Jf3pp_f);
 
     assert(integrator);
     integrator->setKernelsLHSJacobian(kernels);

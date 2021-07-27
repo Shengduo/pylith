@@ -420,36 +420,11 @@ public:
                           const PylithScalar constants[],
                           PylithScalar Jf3[]);
 
-    /** Jf1 function for fault pressure - u.
-     * [t_shift \phi_f \beta^\sigma G \ve{n} \ve{n}, t_shift \phi_f \beta^\sigma G \ve{n} \ve{n}]
+    /** Jf0 function for fault pressure - lambda.
+     * s_tshift \phi_f \beta^\sigma \ve{n} 
      * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void Jf1p_fu(const PylithInt dim,
-                        const PylithInt numS,
-                        const PylithInt numA,
-                        const PylithInt sOff[],
-                        const PylithInt sOff_x[],
-                        const PylithScalar s[],
-                        const PylithScalar s_t[],
-                        const PylithScalar s_x[],
-                        const PylithInt aOff[],
-                        const PylithInt aOff_x[],
-                        const PylithScalar a[],
-                        const PylithScalar a_t[],
-                        const PylithScalar a_x[],
-                        const PylithReal t,
-                        const PylithReal s_tshift,
-                        const PylithScalar x[],
-                        const PylithReal n[],
-                        const PylithInt numConstants,
-                        const PylithScalar constants[],
-                        PylithScalar Jf1[]);
-
-    /** Jf0 function for p' trace_strain.
-     *
-     * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
-     */
-    static void Jf0p_fe(const PylithInt dim,
+    static void Jf0p_fl(const PylithInt dim,
                         const PylithInt numS,
                         const PylithInt numA,
                         const PylithInt sOff[],
@@ -469,6 +444,7 @@ public:
                         const PylithInt numConstants,
                         const PylithScalar constants[],
                         PylithScalar Jf0[]);
+
 
     /** Jf0 function for fault pressure - pressure :
      * [\phi_f beta^p t_shift /4 - \kappa_{fz}/\mu h^2,\phi_f beta^p t_shift /4 - \kappa_{fz}/\mu h^2]
