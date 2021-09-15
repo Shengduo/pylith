@@ -88,79 +88,153 @@ public:
      * @param[out] f0 [dim].
      */
 
-    /** f0 function for poroelasticity equation: f0u = -\lambda (pos side), +\lambda (neg side).
+    /** f0 function for poroelasticity equation: f0u = -\lambda (neg side), +\lambda (pos side).
      *
      * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void f0u(const PylithInt dim,
-                    const PylithInt numS,
-                    const PylithInt numA,
-                    const PylithInt sOff[],
-                    const PylithInt sOff_x[],
-                    const PylithScalar s[],
-                    const PylithScalar s_t[],
-                    const PylithScalar s_x[],
-                    const PylithInt aOff[],
-                    const PylithInt aOff_x[],
-                    const PylithScalar a[],
-                    const PylithScalar a_t[],
-                    const PylithScalar a_x[],
-                    const PylithReal t,
-                    const PylithScalar x[],
-                    const PylithReal n[],
-                    const PylithInt numConstants,
-                    const PylithScalar constants[],
-                    PylithScalar f0[]);
+    static void f0u_neg(const PylithInt dim,
+                        const PylithInt numS,
+                        const PylithInt numA,
+                        const PylithInt sOff[],
+                        const PylithInt sOff_x[],
+                        const PylithScalar s[],
+                        const PylithScalar s_t[],
+                        const PylithScalar s_x[],
+                        const PylithInt aOff[],
+                        const PylithInt aOff_x[],
+                        const PylithScalar a[],
+                        const PylithScalar a_t[],
+                        const PylithScalar a_x[],
+                        const PylithReal t,
+                        const PylithScalar x[],
+                        const PylithReal n[],
+                        const PylithInt numConstants,
+                        const PylithScalar constants[],
+                        PylithScalar f0[]);
+
+    /** f0 function for poroelasticity equation: f0u = -\lambda (neg side), +\lambda (pos side).
+     *
+     * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
+     */
+    static void f0u_pos(const PylithInt dim,
+                        const PylithInt numS,
+                        const PylithInt numA,
+                        const PylithInt sOff[],
+                        const PylithInt sOff_x[],
+                        const PylithScalar s[],
+                        const PylithScalar s_t[],
+                        const PylithScalar s_x[],
+                        const PylithInt aOff[],
+                        const PylithInt aOff_x[],
+                        const PylithScalar a[],
+                        const PylithScalar a_t[],
+                        const PylithScalar a_x[],
+                        const PylithReal t,
+                        const PylithScalar x[],
+                        const PylithReal n[],
+                        const PylithInt numConstants,
+                        const PylithScalar constants[],
+                        PylithScalar f0[]);
+    
+    /** f0 function for bulk pressure equation: f0p = [\kappa_{cz} / \mu * ((p^+ - p^f)/h - n \cdot f_f),
+     *                                                 \kappa_{cz} / \mu * ((p^- - p^f)/h + n \cdot f_f)]
+     *
+     * Solution fields: [disp(dim), vel(dim), ..., lagrange(dim), fault_pressure(1)]
+     */
+    static void f0p_neg(const PylithInt dim,
+                        const PylithInt numS,
+                        const PylithInt numA,
+                        const PylithInt sOff[],
+                        const PylithInt sOff_x[],
+                        const PylithScalar s[],
+                        const PylithScalar s_t[],
+                        const PylithScalar s_x[],
+                        const PylithInt aOff[],
+                        const PylithInt aOff_x[],
+                        const PylithScalar a[],
+                        const PylithScalar a_t[],
+                        const PylithScalar a_x[],
+                        const PylithReal t,
+                        const PylithScalar x[],
+                        const PylithReal n[],
+                        const PylithInt numConstants,
+                        const PylithScalar constants[],
+                        PylithScalar f0[]);
 
     /** f0 function for bulk pressure equation: f0p = [\kappa_{cz} / \mu * ((p^+ - p^f)/h - n \cdot f_f),
      *                                                 \kappa_{cz} / \mu * ((p^- - p^f)/h + n \cdot f_f)]
      *
      * Solution fields: [disp(dim), vel(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void f0p(const PylithInt dim,
-                    const PylithInt numS,
-                    const PylithInt numA,
-                    const PylithInt sOff[],
-                    const PylithInt sOff_x[],
-                    const PylithScalar s[],
-                    const PylithScalar s_t[],
-                    const PylithScalar s_x[],
-                    const PylithInt aOff[],
-                    const PylithInt aOff_x[],
-                    const PylithScalar a[],
-                    const PylithScalar a_t[],
-                    const PylithScalar a_x[],
-                    const PylithReal t,
-                    const PylithScalar x[],
-                    const PylithReal n[],
-                    const PylithInt numConstants,
-                    const PylithScalar constants[],
-                    PylithScalar f0[]);
+    static void f0p_pos(const PylithInt dim,
+                        const PylithInt numS,
+                        const PylithInt numA,
+                        const PylithInt sOff[],
+                        const PylithInt sOff_x[],
+                        const PylithScalar s[],
+                        const PylithScalar s_t[],
+                        const PylithScalar s_x[],
+                        const PylithInt aOff[],
+                        const PylithInt aOff_x[],
+                        const PylithScalar a[],
+                        const PylithScalar a_t[],
+                        const PylithScalar a_x[],
+                        const PylithReal t,
+                        const PylithScalar x[],
+                        const PylithReal n[],
+                        const PylithInt numConstants,
+                        const PylithScalar constants[],
+                        PylithScalar f0[]);
 
     /** f0 function for bulk pressure equation: f0p = [\kappa_{cz} / \mu * ((p^+ - p^f)/h - n \cdot f_f),
      *                                                 \kappa_{cz} / \mu * ((p^- - p^f)/h + n \cdot f_f)]
      *
      * Solution fields: [disp(dim), vel(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void f0p_body(const PylithInt dim,
-                         const PylithInt numS,
-                         const PylithInt numA,
-                         const PylithInt sOff[],
-                         const PylithInt sOff_x[],
-                         const PylithScalar s[],
-                         const PylithScalar s_t[],
-                         const PylithScalar s_x[],
-                         const PylithInt aOff[],
-                         const PylithInt aOff_x[],
-                         const PylithScalar a[],
-                         const PylithScalar a_t[],
-                         const PylithScalar a_x[],
-                         const PylithReal t,
-                         const PylithScalar x[],
-                         const PylithReal n[],
-                         const PylithInt numConstants,
-                         const PylithScalar constants[],
-                         PylithScalar f0[]);
+    static void f0p_body_neg(const PylithInt dim,
+                             const PylithInt numS,
+                             const PylithInt numA,
+                             const PylithInt sOff[],
+                             const PylithInt sOff_x[],
+                             const PylithScalar s[],
+                             const PylithScalar s_t[],
+                             const PylithScalar s_x[],
+                             const PylithInt aOff[],
+                             const PylithInt aOff_x[],
+                             const PylithScalar a[],
+                             const PylithScalar a_t[],
+                             const PylithScalar a_x[],
+                             const PylithReal t,
+                             const PylithScalar x[],
+                             const PylithReal n[],
+                             const PylithInt numConstants,
+                             const PylithScalar constants[],
+                             PylithScalar f0[]);
+    
+    /** f0 function for bulk pressure equation: f0p = [\kappa_{cz} / \mu * ((p^+ - p^f)/h - n \cdot f_f),
+     *                                                 \kappa_{cz} / \mu * ((p^- - p^f)/h + n \cdot f_f)]
+     *
+     * Solution fields: [disp(dim), vel(dim), ..., lagrange(dim), fault_pressure(1)]
+     */
+    static void f0p_body_pos(const PylithInt dim,
+                             const PylithInt numS,
+                             const PylithInt numA,
+                             const PylithInt sOff[],
+                             const PylithInt sOff_x[],
+                             const PylithScalar s[],
+                             const PylithScalar s_t[],
+                             const PylithScalar s_x[],
+                             const PylithInt aOff[],
+                             const PylithInt aOff_x[],
+                             const PylithScalar a[],
+                             const PylithScalar a_t[],
+                             const PylithScalar a_x[],
+                             const PylithReal t,
+                             const PylithScalar x[],
+                             const PylithReal n[],
+                             const PylithInt numConstants,
+                             const PylithScalar constants[],
+                             PylithScalar f0[]);
 
     /** f0 function for slip constraint equation: f0\lambda = (u^+ - u^-) - d
      *
@@ -349,26 +423,49 @@ public:
 
     /** Jf0 function for displacement equation: +\lambda (pos side), -\lambda (neg side).
      */
-    static void Jf0ul(const PylithInt dim,
-                      const PylithInt numS,
-                      const PylithInt numA,
-                      const PylithInt sOff[],
-                      const PylithInt sOff_x[],
-                      const PylithScalar s[],
-                      const PylithScalar s_t[],
-                      const PylithScalar s_x[],
-                      const PylithInt aOff[],
-                      const PylithInt aOff_x[],
-                      const PylithScalar a[],
-                      const PylithScalar a_t[],
-                      const PylithScalar a_x[],
-                      const PylithReal t,
-                      const PylithReal s_tshift,
-                      const PylithScalar x[],
-                      const PylithReal n[],
-                      const PylithInt numConstants,
-                      const PylithScalar constants[],
-                      PylithScalar Jf0[]);
+    static void Jf0ul_neg(const PylithInt dim,
+                          const PylithInt numS,
+                          const PylithInt numA,
+                          const PylithInt sOff[],
+                          const PylithInt sOff_x[],
+                          const PylithScalar s[],
+                          const PylithScalar s_t[],
+                          const PylithScalar s_x[],
+                          const PylithInt aOff[],
+                          const PylithInt aOff_x[],
+                          const PylithScalar a[],
+                          const PylithScalar a_t[],
+                          const PylithScalar a_x[],
+                          const PylithReal t,
+                          const PylithReal s_tshift,
+                          const PylithScalar x[],
+                          const PylithReal n[],
+                          const PylithInt numConstants,
+                          const PylithScalar constants[],
+                          PylithScalar Jf0[]);
+
+    /** Jf0 function for displacement equation: +\lambda (pos side), -\lambda (neg side).
+     */
+    static void Jf0ul_pos(const PylithInt dim,
+                          const PylithInt numS,
+                          const PylithInt numA,
+                          const PylithInt sOff[],
+                          const PylithInt sOff_x[],
+                          const PylithScalar s[],
+                          const PylithScalar s_t[],
+                          const PylithScalar s_x[],
+                          const PylithInt aOff[],
+                          const PylithInt aOff_x[],
+                          const PylithScalar a[],
+                          const PylithScalar a_t[],
+                          const PylithScalar a_x[],
+                          const PylithReal t,
+                          const PylithReal s_tshift,
+                          const PylithScalar x[],
+                          const PylithReal n[],
+                          const PylithInt numConstants,
+                          const PylithScalar constants[],
+                          PylithScalar Jf0[]);
 
     /** Jf0 function for p_f p_f :
      * 2 \kappa_{fz} / (\mu h^2) + 2 \phi_f \beta^p t_shift
@@ -502,51 +599,103 @@ public:
      *
      * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void Jf0pp(const PylithInt dim,
-                      const PylithInt numS,
-                      const PylithInt numA,
-                      const PylithInt sOff[],
-                      const PylithInt sOff_x[],
-                      const PylithScalar s[],
-                      const PylithScalar s_t[],
-                      const PylithScalar s_x[],
-                      const PylithInt aOff[],
-                      const PylithInt aOff_x[],
-                      const PylithScalar a[],
-                      const PylithScalar a_t[],
-                      const PylithScalar a_x[],
-                      const PylithReal t,
-                      const PylithReal s_tshift,
-                      const PylithScalar x[],
-                      const PylithReal n[],
-                      const PylithInt numConstants,
-                      const PylithScalar constants[],
-                      PylithScalar Jf0[]);
+    static void Jf0pp_neg(const PylithInt dim,
+                          const PylithInt numS,
+                          const PylithInt numA,
+                          const PylithInt sOff[],
+                          const PylithInt sOff_x[],
+                          const PylithScalar s[],
+                          const PylithScalar s_t[],
+                          const PylithScalar s_x[],
+                          const PylithInt aOff[],
+                          const PylithInt aOff_x[],
+                          const PylithScalar a[],
+                          const PylithScalar a_t[],
+                          const PylithScalar a_x[],
+                          const PylithReal t,
+                          const PylithReal s_tshift,
+                          const PylithScalar x[],
+                          const PylithReal n[],
+                          const PylithInt numConstants,
+                          const PylithScalar constants[],
+                          PylithScalar Jf0[]);
+    /** Jf0 function for pressure pressure:
+     * [\kappa_{cz} / \mu / h, 0;
+     *  0, \kappa_{cz} / \mu / h]
+     *
+     * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
+     */
+    static void Jf0pp_pos(const PylithInt dim,
+                          const PylithInt numS,
+                          const PylithInt numA,
+                          const PylithInt sOff[],
+                          const PylithInt sOff_x[],
+                          const PylithScalar s[],
+                          const PylithScalar s_t[],
+                          const PylithScalar s_x[],
+                          const PylithInt aOff[],
+                          const PylithInt aOff_x[],
+                          const PylithScalar a[],
+                          const PylithScalar a_t[],
+                          const PylithScalar a_x[],
+                          const PylithReal t,
+                          const PylithReal s_tshift,
+                          const PylithScalar x[],
+                          const PylithReal n[],
+                          const PylithInt numConstants,
+                          const PylithScalar constants[],
+                          PylithScalar Jf0[]);
+
 
     /** Jf0 function for pressure - fault_pressure.
      * [-\kappa_cz / \mu / h, -\kappa_cz / \mu / h]
      * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
      */
-    static void Jf0pp_f(const PylithInt dim,
-                        const PylithInt numS,
-                        const PylithInt numA,
-                        const PylithInt sOff[],
-                        const PylithInt sOff_x[],
-                        const PylithScalar s[],
-                        const PylithScalar s_t[],
-                        const PylithScalar s_x[],
-                        const PylithInt aOff[],
-                        const PylithInt aOff_x[],
-                        const PylithScalar a[],
-                        const PylithScalar a_t[],
-                        const PylithScalar a_x[],
-                        const PylithReal t,
-                        const PylithReal s_tshift,
-                        const PylithScalar x[],
-                        const PylithReal n[],
-                        const PylithInt numConstants,
-                        const PylithScalar constants[],
-                        PylithScalar Jf0[]);
+    static void Jf0pp_f_neg(const PylithInt dim,
+                            const PylithInt numS,
+                            const PylithInt numA,
+                            const PylithInt sOff[],
+                            const PylithInt sOff_x[],
+                            const PylithScalar s[],
+                            const PylithScalar s_t[],
+                            const PylithScalar s_x[],
+                            const PylithInt aOff[],
+                            const PylithInt aOff_x[],
+                            const PylithScalar a[],
+                            const PylithScalar a_t[],
+                            const PylithScalar a_x[],
+                            const PylithReal t,
+                            const PylithReal s_tshift,
+                            const PylithScalar x[],
+                            const PylithReal n[],
+                            const PylithInt numConstants,
+                            const PylithScalar constants[],
+                            PylithScalar Jf0[]);
+
+    /** Jf0 function for pressure - fault_pressure.
+     * [-\kappa_cz / \mu / h, -\kappa_cz / \mu / h]
+     * Solution fields: [disp(dim), ..., lagrange(dim), fault_pressure(1)]
+     */
+    static void Jf0pp_f_pos(const PylithInt dim,
+                            const PylithInt numS,
+                            const PylithInt numA,
+                            const PylithInt sOff[],
+                            const PylithInt sOff_x[],
+                            const PylithScalar s[],
+                            const PylithScalar s_t[],
+                            const PylithScalar s_x[],
+                            const PylithInt aOff[],
+                            const PylithInt aOff_x[],
+                            const PylithScalar a[],
+                            const PylithScalar a_t[],
+                            const PylithScalar a_x[],
+                            const PylithReal t,
+                            const PylithReal s_tshift,
+                            const PylithScalar x[],
+                            const PylithReal n[],
+                            const PylithInt numConstants,
+                            const PylithScalar constants[],
+                            PylithScalar Jf0[]);
 
     /** Jf0 function for slip constraint equation: +\lambda (pos side), -\lambda (neg side).
      *

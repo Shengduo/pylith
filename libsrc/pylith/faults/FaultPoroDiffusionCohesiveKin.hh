@@ -175,6 +175,14 @@ protected:
     void _updateSlipRate(pylith::topology::Field* auxiliaryField,
                          const double t);
 
+    /** Update slip acceleration subfield in auxiliary field at beginning of time step.
+     *
+     * @param[out] auxiliaryField Auxiliary field.
+     * @param[in] t Current time.
+     */
+    void _updateSlipAcceleration(pylith::topology::Field* auxiliaryField,
+                                 const double t);
+
     // PRIVATE TYPEDEFS ////////////////////////////////////////////////////////////////////////////////////////////////
 private:
 
@@ -190,6 +198,25 @@ private:
     srcs_type _ruptures; ///< Array of kinematic earthquake ruptures.
     PetscVec _slipVecRupture; ///< PETSc local Vec to hold slip for one kinematic rupture.
     PetscVec _slipVecTotal; ///< PETSc local Vec to hold slip for all kinematic ruptures.
+
+    // PRIVATE MEMBERS /////////////////////////////////////////////////////////////////////////////////////////////////
+private:
+
+    /** Set kernels for residual.
+     *
+     * @param[out] integrator Integrator for material.
+     * @param[in] solution Solution field.
+     */
+    void _setKernelsResidual(pylith::feassemble::IntegratorInterface *integrator,
+                             const pylith::topology::Field &solution) const;
+
+    /** Set kernels for Jacobian.
+     *
+     * @param[out] integrator Integrator for material.
+     * @param[in] solution Solution field.
+     */
+    void _setKernelsJacobian(pylith::feassemble::IntegratorInterface* integrator,
+                             const pylith::topology::Field& solution) const;
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:

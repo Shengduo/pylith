@@ -21,7 +21,7 @@
 %{
 #include "pylith/faults/FaultCohesive.hh"
 #include "pylith/faults/FaultCohesiveKin.hh"
-#include "pylith/faults/FaultPoroCohesiveKin.hh"
+// #include "pylith/faults/FaultPoroCohesiveKin.hh"
 #include "pylith/faults/FaultPoroDiffusionCohesiveKin.hh"
 #include "pylith/faults/KinSrc.hh"
 #include "pylith/faults/KinSrcStep.hh"
@@ -61,7 +61,7 @@ import_array();
 
 %include "FaultCohesive.i"
 %include "FaultCohesiveKin.i"
-%include "FaultPoroCohesiveKin.i"
+// %include "FaultPoroCohesiveKin.i"
 %include "FaultPoroDiffusionCohesiveKin.i"
 %include "KinSrc.i"
 %include "KinSrcStep.i"

@@ -42,7 +42,7 @@ libpylith_la_SOURCES = \
 	bc/AbsorbingDampersAuxiliaryFactory.cc \
 	faults/FaultCohesive.cc \
 	faults/FaultCohesiveKin.cc \
-	faults/FaultPoroCohesiveKin.cc \
+	# faults/FaultPoroCohesiveKin.cc \
 	faults/FaultPoroDiffusionCohesiveKin.cc \
 	faults/AuxiliaryFactoryKinematic.cc \
 	faults/KinSrc.cc \
@@ -82,7 +82,7 @@ libpylith_la_SOURCES = \
 	fekernels/NeumannTimeDependent.cc \
 	fekernels/AbsorbingDampers.cc \
 	fekernels/FaultCohesiveKin.cc \
-	fekernels/FaultPoroCohesiveKin.cc \
+	# fekernels/FaultPoroCohesiveKin.cc \
 	fekernels/FaultPoroDiffusionCohesiveKin.cc \
 	materials/Material.cc \
 	materials/Elasticity.cc \
