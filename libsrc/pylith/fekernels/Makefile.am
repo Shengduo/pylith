@@ -39,6 +39,13 @@ subpkginclude_HEADERS = \
 	Solution.hh \
 	TimeDependentFn.hh \
 	Viscoelasticity.hh	
+	NeumannTimeDependent.hh \
+	AbsorbingDampers.hh \
+	FaultCohesiveKin.hh \
+	# FaultPoroCohesiveKin.hh \
+	FaultPoroDiffusionCohesiveKin.hh \
+	IsotropicLinearPoroelasticity.hh \
+	Poroelasticity.hh
 
 noinst_HEADERS =
 

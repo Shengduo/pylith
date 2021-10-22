@@ -191,6 +191,32 @@ pylith::problems::SolutionFactory::addLagrangeMultiplierFault(const pylith::topo
     PYLITH_METHOD_END;
 } // addLagrangeMuliplierFault
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Add fault_pressure subfield to solution field.
+void
+pylith::problems::SolutionFactory::addFaultPressure(const pylith::topology::Field::Discretization& discretization) {
+    PYLITH_METHOD_BEGIN;
+    PYLITH_JOURNAL_DEBUG("addFaultPressure(discretization=typeid(discretization).name())");
+
+    const char* fieldName = "fault_pressure";
+    const char* componentNames[1] = { "fault_pressure" };
+
+    pylith::topology::Field::Description description;
+    description.label = fieldName;
+    description.alias = fieldName;
+    description.vectorFieldType = pylith::topology::Field::SCALAR;
+    description.numComponents = 1;
+    description.componentNames.resize(1);
+    description.componentNames[0] = componentNames[0];
+    description.scale = _normalizer.getPressureScale();
+    description.validator = NULL;
+
+    _solution.subfieldAdd(description, discretization);
+
+    PYLITH_METHOD_END;
+} // addFaultPressure
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Add fault Mu multiplier subfield to solution field.
 void
