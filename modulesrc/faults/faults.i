@@ -62,12 +62,9 @@ import_array();
 
 %include "FaultCohesive.i"
 %include "FaultCohesiveKin.i"
-<<<<<<< HEAD
 %include "FaultCohesiveKinPoro.i"
-=======
 // %include "FaultPoroCohesiveKin.i"
 %include "FaultPoroDiffusionCohesiveKin.i"
->>>>>>> Shengduo/rwPoroFault
 %include "KinSrc.i"
 %include "KinSrcStep.i"
 %include "KinSrcRamp.i"
