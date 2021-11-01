@@ -67,6 +67,18 @@ public:
      */
     bool useSourceDensity(void) const;
 
+    /** Include constant pressure source?
+     *
+     * @param[in] value Flag indicating to include constant pressure source term.
+     */
+    void useConstantPressureSource(const bool value);
+
+    /** Include constant pressure source?
+     *
+     * @returns True if including constant pressure source term, false otherwise.
+     */
+    bool useConstantPressureSource(void) const;
+
     /** Use reference stress and strain in computation of stress and
      * strain?
      *
@@ -189,7 +201,8 @@ private:
     bool _useBodyForce; ///< Flag to include body force term.
     bool _useReferenceState; ///< Flag to use reference stress and strain.
     bool _useSourceDensity; ///< Flag to use source density.
-    pylith::materials::RheologyPoroelasticity* _rheology; ///< Bulk rheology for elasticity.
+    bool _useConstantPressureSource; ///< Flag to use constant pressure source.
+    pylith::materials::RheologyPoroelasticity* _rheology; ///< Bulk rheology for poroelasticity.
     pylith::materials::DerivedFactoryElasticity* _derivedFactory; ///< Factory for creating derived fields.
 
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////

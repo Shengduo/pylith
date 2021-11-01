@@ -31,6 +31,8 @@ swig_sources = \
 	FaultCohesive.i \
 	FaultCohesiveKin.i \
 	FaultCohesiveKinPoro.i \
+	# FaultPoroCohesiveKin.i \
+	FaultPoroDiffusionCohesiveKin.i \	
 	KinSrc.i \
 	KinSrcStep.i \
 	KinSrcRamp.i \

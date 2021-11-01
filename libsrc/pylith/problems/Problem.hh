@@ -200,6 +200,12 @@ private:
     /// Setup solution subfields and discretization.
     void _setupSolution(void);
 
+    // Setup field so Lagrange multiplier subfield is limited to degrees of freedom associated with the cohesive cells.
+    void _setupLagrangeMultiplier(void);
+
+    // Setup field so fault pressure subfield is limited to degrees of freedom associated with the cohesive cells.
+    void _setupFaultPressure(void);
+
     // NOT IMPLEMENTED /////////////////////////////////////////////////////////////////////////////////////////////////
 private:
 
