@@ -109,7 +109,7 @@ AC_CHECK_HEADER([mpi.h], [], [AC_MSG_ERROR([header 'mpi.h' not found])])
 
 dnl PETSC
 AC_LANG(C)
-CIT_PATH_PETSC([3.16.0])
+CIT_PATH_PETSC([3.16.1])
 CIT_HEADER_PETSC
 CIT_CHECK_LIB_PETSC
 
@@ -144,7 +144,6 @@ if test "$enable_hdf5" = "yes" ; then
   CIT_HDF5_LIB
   CIT_HDF5_LIB_PARALLEL
 
-  CIT_PYTHON_MODULE([six],[1.0.0])
   CIT_PYTHON_MODULE([h5py],[2.0.0])
 fi
 
@@ -238,7 +237,11 @@ AC_CONFIG_FILES([Makefile
 		tests/mmstests/elasticity/Makefile
 		tests/mmstests/incompressibleelasticity/Makefile
 		tests/mmstests/faults/Makefile
+<<<<<<< HEAD
 		tests/mmstests/faultsPoro/Makefile
+=======
+		tests/mmstests/faultsTrivial/Makefile
+>>>>>>> 9dd374d2b72b83f8da9de2c2701f7e7428c30e6e
 		tests/fullscale/Makefile
 		tests/fullscale/cornercases/Makefile
 		tests/fullscale/cornercases/2d/Makefile
@@ -256,7 +259,7 @@ AC_CONFIG_FILES([Makefile
 		tests/fullscale/poroelasticity/cryer/Makefile
 		tests/fullscale/petsc/Makefile
 		tests/fullscale/eqinfo/Makefile
-    developer/Makefile
+    	developer/Makefile
 		doc/Makefile
 		doc/install/Makefile
 		doc/releasenotes/Makefile
