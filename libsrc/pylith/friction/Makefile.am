@@ -27,6 +27,7 @@ subpkginclude_HEADERS = \
 	SlipWeakeningTime.hh \
 	SlipWeakeningTimeStable.hh \
 	RateStateAgeing.hh \
+	RateStateAgeingFH.hh \
 	TimeWeakening.hh \
 	frictionfwd.hh
 
