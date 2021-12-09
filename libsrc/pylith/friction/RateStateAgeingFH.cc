@@ -39,7 +39,7 @@ namespace pylith {
     namespace _RateStateAgeingFH {
 
       // Number of physical properties.
-      const int numProperties = 6;
+      const int numProperties = 8;
 
       // Physical properties.
       const pylith::materials::Metadata::ParamDescription properties[] = {
@@ -396,7 +396,7 @@ pylith::friction::RateStateAgeingFH::_calcFrictionDeriv(const PylithScalar t,
     const PylithScalar fw = properties[p_fwcoef];
     const PylithScalar Vw = properties[p_fwSlipRate];
     const PylithScalar slipRate0 = properties[p_slipRate0];
-    
+
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
 

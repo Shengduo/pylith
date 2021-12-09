@@ -32,6 +32,7 @@ swig_sources = \
 	SlipWeakeningTime.i \
 	SlipWeakeningTimeStable.i \
 	RateStateAgeing.i \
+	RateStateAgeingFH.i \
 	TimeWeakening.i
 
 swigincludedir = $(pkgdatadir)/swig/$(subpackage)

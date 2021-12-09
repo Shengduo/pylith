@@ -33,13 +33,13 @@
  * exp(slipRate * dt / L) for the term (1 - exp(slipRate * dt / L))
  */
 
-#if !defined(pylith_friction_ratestateageing_hh)
-#define pylith_friction_ratestateageing_hh
+#if !defined(pylith_friction_ratestateageingfh_hh)
+#define pylith_friction_ratestateageingfh_hh
 
 // Include directives ---------------------------------------------------
 #include "FrictionModel.hh" // ISA FrictionModel
 
-// RateStateAgeing -------------------------------------------------------
+// RateStateAgeingFH -------------------------------------------------------
 /** @brief C++ Rate and State fault constitutive model with ageing law.
  *
  * Friction is equal to the product of a coefficient of friction (function
@@ -47,7 +47,7 @@
  */
 
 class pylith::friction::RateStateAgeingFH : public FrictionModel
-{ // class RateStateAgeing
+{ // class RateStateAgeingFH
   friend class TestRateStateAgeingFH; // unit testing
 
   // PUBLIC METHODS /////////////////////////////////////////////////////

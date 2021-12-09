@@ -30,6 +30,7 @@ tests_auto/*/*/*_disp.spatialdb
 tests_auto/*/*/output
 tests_auto/*/*/output
 examples/3d/hex8/output
+examples/3d/Vito/
 examples/2d/subduction/output
 examples/3d/subduction/output
 examples/3d/subduction/mesh/geometry_surfs.jou
