@@ -29,6 +29,7 @@ subpkginclude_HEADERS = \
 	RateStateAgeing.hh \
 	RateStateAgeingFH.hh \
 	RegularizedRateStateAgeingFH.hh \
+	RegularizedRateStateSlippingFH.hh \
 	TimeWeakening.hh \
 	frictionfwd.hh
 

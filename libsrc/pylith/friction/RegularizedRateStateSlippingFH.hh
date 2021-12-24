@@ -16,7 +16,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file libsrc/friction/RegularizedRateStateAgeingFH.hh
+/** @file libsrc/friction/RegularizedRateStateSlippingFH.hh
  *
  * @brief C++ Rate and State fault constitutive model with ageing law and flash heating.
  *
@@ -33,31 +33,31 @@
  * exp(slipRate * dt / L) for the term (1 - exp(slipRate * dt / L))
  */
 
-#if !defined(pylith_friction_regularizedratestateageingfh_hh)
-#define pylith_friction_regularizedratestateageingfh_hh
+#if !defined(pylith_friction_regularizedratestateslippingfh_hh)
+#define pylith_friction_regularizedratestateslippingfh_hh
 
 // Include directives ---------------------------------------------------
 #include "FrictionModel.hh" // ISA FrictionModel
 
-// RegularizedRateStateAgeingFH -------------------------------------------------------
+// RegularizedRateStateSlippingFH -------------------------------------------------------
 /** @brief C++ Rate and State fault constitutive model with ageing law.
  *
  * Friction is equal to the product of a coefficient of friction (function
  * of slip rate and state variable) and the normal traction.
  */
 
-class pylith::friction::RegularizedRateStateAgeingFH : public FrictionModel
-{ // class RegularizedRateStateAgeingFH
-  friend class TestRegularizedRateStateAgeingFH; // unit testing
+class pylith::friction::RegularizedRateStateSlippingFH : public FrictionModel
+{ // class RegularizedRateStateSlippingFH
+  friend class TestRegularizedRateStateSlippingFH; // unit testing
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
 public :
 
   /// Default constructor.
-  RegularizedRateStateAgeingFH(void);
+  RegularizedRateStateSlippingFH(void);
 
   /// Destructor.
-  ~RegularizedRateStateAgeingFH(void);
+  ~RegularizedRateStateSlippingFH(void);
 
   /** Set nondimensional slip rate below which friction varies
    *  linearly with slip rate.
@@ -222,10 +222,10 @@ private :
   // NOT IMPLEMENTED ////////////////////////////////////////////////////
 private :
 
-  RegularizedRateStateAgeingFH(const RegularizedRateStateAgeingFH&); ///< Not implemented.
-  const RegularizedRateStateAgeingFH& operator=(const RegularizedRateStateAgeingFH&); ///< Not implemented
+  RegularizedRateStateSlippingFH(const RegularizedRateStateSlippingFH&); ///< Not implemented.
+  const RegularizedRateStateSlippingFH& operator=(const RegularizedRateStateSlippingFH&); ///< Not implemented
 
-}; // class RegularizedRateStateAgeingFH
+}; // class RegularizedRateStateSlippingFH
 
 #endif // pylith_friction_ratestateageingFH_hh
 

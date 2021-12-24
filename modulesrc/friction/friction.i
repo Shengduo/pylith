@@ -33,6 +33,8 @@
 #include "pylith/friction/SlipWeakeningTimeStable.hh"
 #include "pylith/friction/RateStateAgeing.hh"
 #include "pylith/friction/RateStateAgeingFH.hh"
+#include "pylith/friction/RegularizedRateStateAgeingFH.hh"
+#include "pylith/friction/RegularizedRateStateSlippingFH.hh"
 #include "pylith/friction/TimeWeakening.hh"
 
 #include "pylith/utils/types.hh"
@@ -68,6 +70,8 @@ import_array();
 %include "SlipWeakeningTimeStable.i"
 %include "RateStateAgeing.i"
 %include "RateStateAgeingFH.i"
+%include "RegularizedRateStateAgeingFH.i"
+%include "RegularizedRateStateSlippingFH.i"
 %include "TimeWeakening.i"
 
 
