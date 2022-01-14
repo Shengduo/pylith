@@ -91,6 +91,7 @@ libpylith_la_SOURCES = \
 	friction/SlipWeakeningTimeStable.cc \
 	friction/RateStateAgeing.cc \
 	friction/RateStateAgeingFH.cc \
+	friction/RateStateSlippingFH.cc \
 	friction/RegularizedRateStateAgeingFH.cc \
 	friction/RegularizedRateStateSlippingFH.cc \
 	friction/TimeWeakening.cc \
