@@ -460,16 +460,18 @@ pylith::friction::RateStateSlippingFH::_updateStateVars(const PylithScalar t,
   PylithScalar thetaTpdtVertex = 0.0;
   
   // Use slip law
-  thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
-  /**
+  // thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
+  
   if (vDtL > 1.0e-20) {
-    thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
+    //thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
+    thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
     PetscLogFlops(7);
   } else {
-    thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
+    // thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
+    thetaTpdtVertex = pow(thetaTVertex, expTerm);
     PetscLogFlops(9);
   } // if/else
-  */
+  
   stateVars[s_state] = thetaTpdtVertex;
 
 } // _updateStateVars
