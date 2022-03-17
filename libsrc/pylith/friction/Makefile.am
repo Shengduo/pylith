@@ -28,6 +28,7 @@ subpkginclude_HEADERS = \
 	SlipWeakeningTimeStable.hh \
 	RateStateAgeing.hh \
 	RateStateAgeingFH.hh \
+	RateStateAgeingVaryingBFH.hh \
 	RateStateSlippingFH.hh \
 	RegularizedRateStateAgeingFH.hh \
 	RegularizedRateStateSlippingFH.hh \
