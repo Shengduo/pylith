@@ -440,7 +440,6 @@ pylith::friction::RateStateAgeingVaryingBFH::_calcFrictionDeriv(const PylithScal
     const PylithScalar L = properties[p_L];
     const PylithScalar fw = properties[p_fwcoef];
     const PylithScalar Vw = properties[p_fwSlipRate];
-    const PylithScalar L = properties[p_L];
     const PylithScalar slipRate0 = properties[p_slipRate0];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
