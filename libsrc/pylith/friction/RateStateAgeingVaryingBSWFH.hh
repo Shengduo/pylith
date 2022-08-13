@@ -195,6 +195,9 @@ private :
   /// Floor for slip rate used in friction calculation.
   PylithScalar _linearSlipRate;
 
+  /// Fix normal traction at each location
+  PylithScalar _normalTraction;
+  
   /// Indices for properties in section and spatial database.
   static const int p_coef;
   static const int p_slipRate0;
@@ -204,7 +207,10 @@ private :
   static const int p_cohesion;
   static const int p_fwcoef;
   static const int p_fwSlipRate;
-  static const int p_fwSlipWeakeningL;
+  static const int p_fwLLow;
+  static const int p_fwLHigh;
+  static const int p_fwSiLow;
+  static const int p_fwSiHigh;
 
   static const int db_coef;
   static const int db_slipRate0;
@@ -214,7 +220,10 @@ private :
   static const int db_cohesion;
   static const int db_fwcoef;
   static const int db_fwSlipRate;
-  static const int db_fwSlipWeakeningL;
+  static const int db_fwLLow;
+  static const int db_fwLHigh;
+  static const int db_fwSiLow;
+  static const int db_fwSiHigh;
   
   /// Indices for state variables in section and spatial database.
   static const int s_state;

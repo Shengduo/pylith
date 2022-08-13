@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "random": "cpp",
-        "regularizedratestateslippingfh.hh": "c"
+        "regularizedratestateslippingfh.hh": "c",
+        "sstream": "cpp"
     },
     "terminal.integrated.fontSize": 20
 }

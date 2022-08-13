@@ -74,7 +74,10 @@ class RateStateAgeingVaryingBSWFH(FrictionModel, ModuleRateStateAgeingVaryingBSW
                      "cohesion",
                      "flash_heating_coefficient", 
                      "flash_heating_slip_rate", 
-                     "constitutive_parameter_slip_weakening_distance"],
+                     "constitutive_parameter_l_low", 
+                     "constitutive_parameter_l_high",
+                     "constitutive_parameter_si_low",
+                     "constitutive_parameter_si_high"],
             'data': ["state_variable"]},
          'cell': \
            {'info': [],
