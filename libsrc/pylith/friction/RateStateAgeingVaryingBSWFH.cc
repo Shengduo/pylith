@@ -431,6 +431,9 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFriction(const PylithScalar 
     const PylithScalar fwLHigh = properties[p_fwLHigh];
     const PylithScalar fwSiLow = properties[p_fwSiLow];
     const PylithScalar fwSiHigh = properties[p_fwSiHigh];
+    const PylithScalar slipStar = 1.0e-6;
+    const PylithScalar logVwOverVw0 = -16. * log(10.);
+    const PylithScalar kDelta = logVwOverVw0 / log(fwSiHigh / fwSiLow) / (fwLHigh / slipStar);
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar si0 = 10.0e6;
@@ -438,7 +441,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFriction(const PylithScalar 
     const PylithScalar beta = log(fwLLow / fwLHigh) / log(fwSiLow / fwSiHigh);
     const PylithScalar alp = fwLLow / pow(fwSiLow / si0, beta);
     const PylithScalar Lw = t >= 0. ? alp * pow(_normalTraction / si0, beta) : alp;
-
+    const PylithScalar Vw = t >= 0. ? fwSlipRate * pow(_normalTraction / fwSiLow, kDelta * slip / slipStar) : fwSlipRate;
     // const PylithScalar beta = (fwLLow - fwLHigh) / (fwSiLow - fwSiHigh);
     // const PylithScalar alp = fwLLow - beta * fwSiLow;
     // PylithScalar Lw = beta * (-normalTraction) + alp;
@@ -447,11 +450,11 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFriction(const PylithScalar 
 
     if (slipRate >= slipRateLinear) {
       mu_f = f0 + a*log(slipRate / slipRate0) + b*log(slipRate0*theta/L);
-      mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate + slip / Lw);
+      mu_f = fw + (mu_f - fw) / (1. + L / theta / Vw);
     } else {
       mu_f = f0 + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) -
 	a*(1.0 - slipRate/slipRateLinear);
-      mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate + slip / Lw);
+      mu_f = fw + (mu_f - fw) / (1. + L / theta / Vw);
     } // else
     friction = -mu_f * normalTraction + properties[p_cohesion];
     
@@ -489,27 +492,29 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFrictionDeriv(const PylithSc
 
     // initialize _normaltraction
     if(t >= 0. && _normalTraction < 0.) _normalTraction = -normalTraction;
-
     const PylithScalar slipRateLinear = _linearSlipRate;
     const PylithScalar f0= properties[p_coef];
     const PylithScalar a = properties[p_a];
     const PylithScalar b = properties[p_b];
     const PylithScalar L = properties[p_L];
-    const PylithScalar fw = properties[p_fwcoef];
-    const PylithScalar Vw = properties[p_fwSlipRate];
     const PylithScalar slipRate0 = properties[p_slipRate0];
+    const PylithScalar fw = properties[p_fwcoef];
+    const PylithScalar fwSlipRate = properties[p_fwSlipRate];
     const PylithScalar fwLLow = properties[p_fwLLow];
     const PylithScalar fwLHigh = properties[p_fwLHigh];
     const PylithScalar fwSiLow = properties[p_fwSiLow];
     const PylithScalar fwSiHigh = properties[p_fwSiHigh];
+    const PylithScalar slipStar = 1.0e-6;
+    const PylithScalar logVwOverVw0 = -16. * log(10.);
+    const PylithScalar kDelta = logVwOverVw0 / log(fwSiHigh / fwSiLow) / (fwLHigh / slipStar);
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
-    // lw = alpha * (si / si0)^beta
     const PylithScalar si0 = 10.0e6;
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
     const PylithScalar beta = log(fwLLow / fwLHigh) / log(fwSiLow / fwSiHigh);
     const PylithScalar alp = fwLLow / pow(fwSiLow / si0, beta);
-    const PylithScalar Lw = t >= 0.? alp * pow(_normalTraction / si0, beta) : alp;
+    const PylithScalar Lw = t >= 0. ? alp * pow(_normalTraction / si0, beta) : alp;
+    const PylithScalar Vw = t >= 0. ? fwSlipRate * pow(_normalTraction / fwSiLow, kDelta * slip / slipStar) : fwSlipRate;
 
     // const PylithScalar beta = (fwLLow - fwLHigh) / (fwSiLow - fwSiHigh);
     // const PylithScalar alp = fwLLow - beta * fwSiLow;
@@ -522,12 +527,20 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFrictionDeriv(const PylithSc
     if (slipRate >= slipRateLinear) {
       // frictionDeriv = -normalTraction * a / (slipRate * _dt);
       fRS = f0 + a * log(slipRate / slipRate0) + b * log(slipRate0 * theta / L);
-      frictionDeriv = -normalTraction * ((a / (slipRate * _dt))/ (1. + L / theta / Vw + slip / Lw) 
-                                          - (fRS - fw) / (1. + L / theta / Vw + slip / Lw) / (1. + L / theta / Vw + slip / Lw) / Lw);
+      if (_normalTraction > 0.)
+        frictionDeriv = -normalTraction * ((a / (slipRate * _dt))/ (1. + L / theta / Vw) 
+                                            + (fRS - fw) / pow(1. + L / theta / Vw, 2) * (L / theta / Vw) * (kDelta / slipStar) * log(_normalTraction / fwSiLow));
+      else
+        frictionDeriv = -normalTraction * ((a / (slipRate * _dt))/ (1. + L / theta / Vw));
+                         
     } else {
       fRS = f0 + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) - a*(1.0 - slipRate/slipRateLinear);
-      frictionDeriv = -normalTraction * ((a / (slipRateLinear * _dt)) / (1. + L / theta / Vw + slip / Lw)
-                                          - (fRS - fw) / (1. + L / theta / Vw + slip / Lw) / (1. + L / theta / Vw + slip / Lw) / Lw);
+      if (_normalTraction > 0.)
+        frictionDeriv = -normalTraction * ((a / (slipRateLinear * _dt))/ (1. + L / theta / Vw) 
+                                            + (fRS - fw) / pow(1. + L / theta / Vw, 2) * (L / theta / Vw) * (kDelta / slipStar) * log(_normalTraction / fwSiLow));
+      else
+        frictionDeriv = -normalTraction * ((a / (slipRateLinear * _dt))/ (1. + L / theta / Vw));
+       
     }
   } // if    
 
