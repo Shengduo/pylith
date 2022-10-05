@@ -39,7 +39,7 @@ namespace pylith {
     namespace _RateStateAgeingVaryingBSWFH {
 
       // Number of physical properties.
-      const int numProperties = 12;
+      const int numProperties = 13;
 
       // Physical properties.
       const pylith::materials::Metadata::ParamDescription properties[] = {
@@ -54,7 +54,8 @@ namespace pylith {
         { "constitutive_parameter_l_low", 1, pylith::topology::FieldBase::SCALAR }, 
         { "constitutive_parameter_l_high", 1, pylith::topology::FieldBase::SCALAR }, 
         { "constitutive_parameter_si_low", 1, pylith::topology::FieldBase::SCALAR }, 
-        { "constitutive_parameter_si_high", 1, pylith::topology::FieldBase::SCALAR }
+        { "constitutive_parameter_si_high", 1, pylith::topology::FieldBase::SCALAR }, 
+        { "constitutive_parameter_fwLexp", 1, pylith::topology::FieldBase::SCALAR }
       };
 
       // Number of State Variables.
@@ -66,8 +67,8 @@ namespace pylith {
       };
 
       // Values expected in spatial database
-      const int numDBProperties = 12;
-      const char* dbProperties[12] = {
+      const int numDBProperties = 13;
+      const char* dbProperties[13] = {
 	"reference-friction-coefficient",
 	"reference-slip-rate",
 	"characteristic-slip-distance",
@@ -79,7 +80,8 @@ namespace pylith {
   "constitutive-parameter-l-low", 
   "constitutive-parameter-l-high", 
   "constitutive-parameter-si-low", 
-  "constitutive-parameter-si-high"
+  "constitutive-parameter-si-high", 
+  "constitutive-parameter-fwLexp"
       };
 
       const int numDBStateVars = 1;
@@ -115,6 +117,8 @@ const int pylith::friction::RateStateAgeingVaryingBSWFH::p_fwSiLow =
   pylith::friction::RateStateAgeingVaryingBSWFH::p_fwLHigh + 1;
 const int pylith::friction::RateStateAgeingVaryingBSWFH::p_fwSiHigh =
   pylith::friction::RateStateAgeingVaryingBSWFH::p_fwSiLow + 1;
+const int pylith::friction::RateStateAgeingVaryingBSWFH::p_fwLexp =
+  pylith::friction::RateStateAgeingVaryingBSWFH::p_fwSiHigh + 1;
 
 // Indices of database values (order must match dbProperties)
 const int pylith::friction::RateStateAgeingVaryingBSWFH::db_coef = 0;
@@ -140,6 +144,8 @@ const int pylith::friction::RateStateAgeingVaryingBSWFH::db_fwSiLow =
   pylith::friction::RateStateAgeingVaryingBSWFH::db_fwLHigh + 1;
 const int pylith::friction::RateStateAgeingVaryingBSWFH::db_fwSiHigh =
   pylith::friction::RateStateAgeingVaryingBSWFH::db_fwSiLow + 1;
+const int pylith::friction::RateStateAgeingVaryingBSWFH::db_fwLexp =
+  pylith::friction::RateStateAgeingVaryingBSWFH::db_fwSiHigh + 1;
 
 // Indices of state variables.
 const int pylith::friction::RateStateAgeingVaryingBSWFH::s_state = 0;
@@ -207,6 +213,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_dbToProperties(PylithScalar* con
   const PylithScalar FHLHigh = dbValues[db_fwLHigh];
   const PylithScalar FHSiLow = dbValues[db_fwSiLow];
   const PylithScalar FHSiHigh = dbValues[db_fwSiHigh];
+  const PylithScalar FHLexp = dbValues[db_fwLexp];
 
   if (frictionCoef < 0.0) {
     std::ostringstream msg;
@@ -288,6 +295,14 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_dbToProperties(PylithScalar* con
     throw std::runtime_error(msg.str());
   } // if
 
+  if (FHLexp <= 0.0) {
+    std::ostringstream msg;
+    msg << "Spatial database returned nonpositive value for constitutive "
+  << "parameter 'flash heating exponential decay distance fwLexp.\n"
+  << "Flash heating decay distance 'fwLexp' of Ageing Law of friction: " << FHLexp << "\n";
+    throw std::runtime_error(msg.str());
+  } // if
+
   propValues[p_coef] = frictionCoef;
   propValues[p_slipRate0] = slipRate0;
   propValues[p_L] = dc;
@@ -300,6 +315,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_dbToProperties(PylithScalar* con
   propValues[p_fwLHigh] = FHLHigh;
   propValues[p_fwSiLow] = FHSiLow;
   propValues[p_fwSiHigh] = FHSiHigh;
+  propValues[p_fwLexp] = FHLexp;
 
 } // _dbToProperties
 
@@ -325,6 +341,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_nondimProperties(PylithScalar* c
   values[p_fwLHigh] /= lengthScale;
   values[p_fwSiLow] /= pressureScale;
   values[p_fwSiHigh] /= pressureScale;
+  values[p_fwLexp] /= lengthScale;
 
 } // _nondimProperties
 
@@ -350,6 +367,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_dimProperties(PylithScalar* cons
   values[p_fwLHigh] *= lengthScale;
   values[p_fwSiLow] *= pressureScale;
   values[p_fwSiHigh] *= pressureScale;
+  values[p_fwLexp] *= lengthScale;
 } // _dimProperties
 
 // ----------------------------------------------------------------------
@@ -431,7 +449,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFriction(const PylithScalar 
     const PylithScalar fwLHigh = properties[p_fwLHigh];
     const PylithScalar fwSiLow = properties[p_fwSiLow];
     const PylithScalar fwSiHigh = properties[p_fwSiHigh];
-    const PylithScalar fwLexp = 20.0e-6;
+    const PylithScalar fwLexp = properties[p_fwLexp];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar si0 = 10.0e6;
@@ -503,7 +521,7 @@ pylith::friction::RateStateAgeingVaryingBSWFH::_calcFrictionDeriv(const PylithSc
     const PylithScalar fwLHigh = properties[p_fwLHigh];
     const PylithScalar fwSiLow = properties[p_fwSiLow];
     const PylithScalar fwSiHigh = properties[p_fwSiHigh];
-    const PylithScalar fwLexp = 20.0e-6;
+    const PylithScalar fwLexp = properties[p_fwLexp];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     // lw = alpha * (si / si0)^beta

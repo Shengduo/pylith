@@ -77,7 +77,8 @@ class RateStateAgeingVaryingBSWFH(FrictionModel, ModuleRateStateAgeingVaryingBSW
                      "constitutive_parameter_l_low", 
                      "constitutive_parameter_l_high",
                      "constitutive_parameter_si_low",
-                     "constitutive_parameter_si_high"],
+                     "constitutive_parameter_si_high", 
+                     "constitutive_parameter_fwLexp"],
             'data': ["state_variable"]},
          'cell': \
            {'info': [],

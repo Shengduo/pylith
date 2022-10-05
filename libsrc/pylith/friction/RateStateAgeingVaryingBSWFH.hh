@@ -211,6 +211,7 @@ private :
   static const int p_fwLHigh;
   static const int p_fwSiLow;
   static const int p_fwSiHigh;
+  static const int p_fwLexp; 
 
   static const int db_coef;
   static const int db_slipRate0;
@@ -224,8 +225,9 @@ private :
   static const int db_fwLHigh;
   static const int db_fwSiLow;
   static const int db_fwSiHigh;
+  static const int db_fwLexp;
   
-  /// Indices for state variables in section and spatial database.
+  /// Indexes for state variables in section and spatial database.
   static const int s_state;
 
   static const int db_state;

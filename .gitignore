@@ -19,6 +19,7 @@ PyLith.egg-info
 autom4te.cache
 *~
 *.pyc
+examples/3d/VitoInput/*
 examples/*/*/output/*.vtk
 examples/2d/*/output/*.h5
 examples/2d/*/output/*.xmf
