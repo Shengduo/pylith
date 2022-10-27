@@ -20,6 +20,7 @@ autom4te.cache
 *~
 *.pyc
 examples/3d/VitoInput/*
+examples/3d/InverseProblem/*
 examples/*/*/output/*.vtk
 examples/2d/*/output/*.h5
 examples/2d/*/output/*.xmf
