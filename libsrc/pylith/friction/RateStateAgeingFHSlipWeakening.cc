@@ -362,17 +362,17 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_calcFriction(const PylithScal
     const PylithScalar slipRate0 = properties[p_slipRate0];
     const PylithScalar fw = properties[p_fwcoef];
     const PylithScalar fwSlipRate = properties[p_fwSlipRate];
-    const PylithScalar dynCoef = dbValues[db_dynCoef];
-    const PylithScalar slipL = dbValues[db_slipL];
+    const PylithScalar dynCoef = properties[db_dynCoef];
+    const PylithScalar slipL = properties[db_slipL];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
 
     if (slipRate >= slipRateLinear) {
-      mu_f = f0 + (dynCoef - f0) / slipL * min(slip, slipL) + a*log(slipRate / slipRate0) + b*log(slipRate0*theta/L);
+      mu_f = f0 + (dynCoef - f0) / slipL * std::min(slip, slipL) + a*log(slipRate / slipRate0) + b*log(slipRate0*theta/L);
       mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate);
     } else {
-      mu_f = f0 + (dynCoef - f0) / slipL * min(slip, slipL) + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) -
+      mu_f = f0 + (dynCoef - f0) / slipL * std::min(slip, slipL) + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) -
 	a*(1.0 - slipRate/slipRateLinear);
       mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate);
     } // else
@@ -418,8 +418,8 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_calcFrictionDeriv(const Pylit
     const PylithScalar fw = properties[p_fwcoef];
     const PylithScalar Vw = properties[p_fwSlipRate];
     const PylithScalar slipRate0 = properties[p_slipRate0];
-    const PylithScalar dynCoef = dbValues[db_dynCoef];
-    const PylithScalar slipL = dbValues[db_slipL];
+    const PylithScalar dynCoef = properties[db_dynCoef];
+    const PylithScalar slipL = properties[db_slipL];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
