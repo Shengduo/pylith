@@ -33,6 +33,7 @@ swig_sources = \
 	SlipWeakeningTimeStable.i \
 	RateStateAgeing.i \
 	RateStateAgeingFH.i \
+	RateStateAgeingFHSlipWeakening.i \
 	RateStateAgeingVaryingBFH.i \
 	RateStateAgeingVaryingBSWFH.i \
 	RateStateSlippingFH.i \

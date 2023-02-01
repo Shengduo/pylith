@@ -4,5 +4,6 @@
         "regularizedratestateslippingfh.hh": "c",
         "sstream": "cpp"
     },
-    "terminal.integrated.fontSize": 20
+    "terminal.integrated.fontSize": 20,
+    "git.ignoreLimitWarning": true
 }
