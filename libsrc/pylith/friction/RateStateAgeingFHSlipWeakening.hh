@@ -206,6 +206,7 @@ private :
   static const int p_fwSlipRate;
   static const int p_dynCoef;
   static const int p_slipL;
+  static const int p_slipHoldL;
 
   static const int db_coef;
   static const int db_slipRate0;
@@ -217,7 +218,8 @@ private :
   static const int db_fwSlipRate;
   static const int db_dynCoef;
   static const int db_slipL;
-  
+  static const int db_slipHoldL;
+
   /// Indices for state variables in section and spatial database.
   static const int s_state;
 

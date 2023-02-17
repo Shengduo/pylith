@@ -75,7 +75,8 @@ class RateStateAgeingFHSlipWeakening(FrictionModel, ModuleRateStateAgeingFHSlipW
                      "flash_heating_coefficient", 
                      "flash_heating_slip_rate",  
                      "slip_weakening_friction_coefficient", 
-                     "slip_weakening_distance"],
+                     "slip_weakening_distance", 
+                     "slip_weakening_hold_distance"],
             'data': ["state_variable"]},
          'cell': \
            {'info': [],

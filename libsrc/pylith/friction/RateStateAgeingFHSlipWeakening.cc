@@ -39,7 +39,7 @@ namespace pylith {
     namespace _RateStateAgeingFHSlipWeakening {
 
       // Number of physical properties.
-      const int numProperties = 10;
+      const int numProperties = 11;
 
       // Physical properties.
       const pylith::materials::Metadata::ParamDescription properties[] = {
@@ -52,7 +52,8 @@ namespace pylith {
         { "flash_heating_coefficient", 1, pylith::topology::FieldBase::SCALAR }, 
         { "flash_heating_slip_rate", 1, pylith::topology::FieldBase::SCALAR },
         { "slip_weakening_friction_coefficient", 1, pylith::topology::FieldBase::SCALAR },
-        { "slip_weakening_distance", 1, pylith::topology::FieldBase::SCALAR }
+        { "slip_weakening_distance", 1, pylith::topology::FieldBase::SCALAR }, 
+        { "slip_weakening_hold_distance", 1, pylith::topology::FieldBase::SCALAR }
       };
 
       // Number of State Variables.
@@ -64,8 +65,8 @@ namespace pylith {
       };
 
       // Values expected in spatial database
-      const int numDBProperties = 10;
-      const char* dbProperties[10] = {
+      const int numDBProperties = 11;
+      const char* dbProperties[11] = {
 	"reference-friction-coefficient",
 	"reference-slip-rate",
 	"characteristic-slip-distance",
@@ -75,7 +76,8 @@ namespace pylith {
   "flash_heating_coefficient", 
   "flash_heating_slip_rate", 
   "slip_weakening_friction_coefficient", 
-  "slip_weakening_distance"
+  "slip_weakening_distance", 
+  "slip_weakening_hold_distance"
       };
 
       const int numDBStateVars = 1;
@@ -107,6 +109,8 @@ const int pylith::friction::RateStateAgeingFHSlipWeakening::p_dynCoef =
   pylith::friction::RateStateAgeingFHSlipWeakening::p_fwSlipRate + 1;
 const int pylith::friction::RateStateAgeingFHSlipWeakening::p_slipL =
   pylith::friction::RateStateAgeingFHSlipWeakening::p_dynCoef + 1;
+const int pylith::friction::RateStateAgeingFHSlipWeakening::p_slipHoldL =
+  pylith::friction::RateStateAgeingFHSlipWeakening::p_slipL + 1;
 
 // Indices of database values (order must match dbProperties)
 const int pylith::friction::RateStateAgeingFHSlipWeakening::db_coef = 0;
@@ -128,6 +132,8 @@ const int pylith::friction::RateStateAgeingFHSlipWeakening::db_dynCoef =
   pylith::friction::RateStateAgeingFHSlipWeakening::db_fwSlipRate + 1;
 const int pylith::friction::RateStateAgeingFHSlipWeakening::db_slipL =
   pylith::friction::RateStateAgeingFHSlipWeakening::db_dynCoef + 1;
+const int pylith::friction::RateStateAgeingFHSlipWeakening::db_slipHoldL =
+  pylith::friction::RateStateAgeingFHSlipWeakening::db_slipL + 1;
 
 // Indices of state variables.
 const int pylith::friction::RateStateAgeingFHSlipWeakening::s_state = 0;
@@ -192,6 +198,7 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_dbToProperties(PylithScalar* 
   const PylithScalar FHSlipRate = dbValues[db_fwSlipRate];
   const PylithScalar dynCoef = dbValues[db_dynCoef];
   const PylithScalar slipL = dbValues[db_slipL];
+  const PylithScalar slipHoldL = dbValues[db_slipHoldL];
 
   if (frictionCoef < 0.0) {
     std::ostringstream msg;
@@ -243,6 +250,7 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_dbToProperties(PylithScalar* 
   propValues[p_fwSlipRate] = FHSlipRate;
   propValues[p_dynCoef] = dynCoef;
   propValues[p_slipL] = slipL;
+  propValues[p_slipHoldL] = slipHoldL;
 
 } // _dbToProperties
 
@@ -265,6 +273,8 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_nondimProperties(PylithScalar
   values[p_cohesion] /= pressureScale;
   values[p_fwSlipRate] /= lengthScale / timeScale;
   values[p_slipL] /= lengthScale;
+  values[p_slipHoldL] /= lengthScale;
+
 } // _nondimProperties
 
 // ----------------------------------------------------------------------
@@ -286,6 +296,8 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_dimProperties(PylithScalar* c
   values[p_cohesion] *= pressureScale;
   values[p_fwSlipRate] *= lengthScale / timeScale;
   values[p_slipL] *= lengthScale;
+  values[p_slipHoldL] *= lengthScale;
+
 } // _dimProperties
 
 // ----------------------------------------------------------------------
@@ -364,16 +376,29 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_calcFriction(const PylithScal
     const PylithScalar fwSlipRate = properties[p_fwSlipRate];
     const PylithScalar dynCoef = properties[db_dynCoef];
     const PylithScalar slipL = properties[db_slipL];
+    const PylithScalar slipHoldL = properties[db_slipHoldL];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
+    PylithScalar fStar = 0.;
+    if (slip <= slipL) {
+      fStar = f0 + (dynCoef - f0) / slipL * slip;
+    }
+    else if (slip <= slipL + slipHoldL) {
+      fStar = dynCoef;
+    }
+    else if (slip <= slipL + slipHoldL + slipL) {
+      fStar = dynCoef + (f0 - dynCoef) / slipL * (slip - slipL - slipHoldL);
+    }
+    else {
+      fStar = f0;
+    }
 
     if (slipRate >= slipRateLinear) {
-      mu_f = f0 + (dynCoef - f0) / slipL * std::min(slip, slipL) + a*log(slipRate / slipRate0) + b*log(slipRate0*theta/L);
+      mu_f = fStar + a*log(slipRate / slipRate0) + b*log(slipRate0*theta/L);
       mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate);
     } else {
-      mu_f = f0 + (dynCoef - f0) / slipL * std::min(slip, slipL) + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) -
-	a*(1.0 - slipRate/slipRateLinear);
+      mu_f = fStar + a*log(slipRateLinear / slipRate0) + b*log(slipRate0*theta/L) - a*(1.0 - slipRate/slipRateLinear);
       mu_f = fw + (mu_f - fw) / (1. + L / theta / fwSlipRate);
     } // else
     friction = -mu_f * normalTraction + properties[p_cohesion];
@@ -420,10 +445,24 @@ pylith::friction::RateStateAgeingFHSlipWeakening::_calcFrictionDeriv(const Pylit
     const PylithScalar slipRate0 = properties[p_slipRate0];
     const PylithScalar dynCoef = properties[db_dynCoef];
     const PylithScalar slipL = properties[db_slipL];
+    const PylithScalar slipHoldL = properties[db_slipHoldL];
 
     // Prevent zero value for theta, reasonable value is L / slipRate0
     const PylithScalar theta = (stateVars[s_state] > 0.0) ? stateVars[s_state] : L / slipRate0;
-    const PylithScalar indicator = (slip > slipL) ? 0.0 : 1.0;
+    PylithScalar indicator = 0.0;
+
+    if (slip <= slipL) {
+      indicator = 1.;
+    }
+    else if (slip <= slipL + slipHoldL) {
+      indicator = 0.;
+    }
+    else if (slip <= slipL + slipHoldL + slipL) {
+      indicator = -1.;
+    }
+    else {
+      indicator = 0.;
+    }
 
     if (slipRate >= slipRateLinear) {
       // frictionDeriv = -normalTraction * a / (slipRate * _dt);
