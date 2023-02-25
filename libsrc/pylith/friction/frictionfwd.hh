@@ -39,6 +39,7 @@ namespace pylith {
     class RateStateAgeing;
     class RateStateAgeingFH;
     class RateStateAgeingFHSlipWeakening;
+    class RateStateAgeingFHSlipWeakeningVw;
     class RateStateAgeingVaryingBFH;
     class RateStateAgeingVaryingBSWFH;
     class RateStateSlippingFH;
