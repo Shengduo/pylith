@@ -16,17 +16,17 @@
 # ----------------------------------------------------------------------
 #
 
-## @file pylith/friction/RateStateAgeingFHSlipWeakeningVw.py
+## @file pylith/friction/RateStateSlipFHSlipWeakeningVw.py
 ##
 ## @brief Python object implementing Rate and State with Ageing Law.
 ##
 ## Factory: friction_model.
 
 from FrictionModel import FrictionModel
-from friction import RateStateAgeingFHSlipWeakeningVw as ModuleRateStateAgeingFHSlipWeakeningVw
+from friction import RateStateSlipFHSlipWeakeningVw as ModuleRateStateSlipFHSlipWeakeningVw
 
-# RateStateAgeingFHSlipWeakeningVw class
-class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSlipWeakeningVw):
+# RateStateSlipFHSlipWeakeningVw class
+class RateStateSlipFHSlipWeakeningVw(FrictionModel, ModuleRateStateSlipFHSlipWeakeningVw):
   """
   Python object implementing Rate and State with Ageing Law.
 
@@ -37,11 +37,11 @@ class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSli
 
   class Inventory(FrictionModel.Inventory):
     """
-    Python object for managing RateStateAgeingFHSlipWeakeningVw facilities and properties.
+    Python object for managing RateStateSlipFHSlipWeakeningVw facilities and properties.
     """
     
     ## @class Inventory
-    ## Python object for managing RateStateAgeingFHSlipWeakeningVw facilities and properties.
+    ## Python object for managing RateStateSlipFHSlipWeakeningVw facilities and properties.
     ##
     ## \b Properties
     ## @li \b linear_slip_rate Nondimensional slip rate below which friction 
@@ -59,7 +59,7 @@ class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSli
 
   # PUBLIC METHODS /////////////////////////////////////////////////////
 
-  def __init__(self, name="RateStateAgeingFHSlipWeakeningVw"):
+  def __init__(self, name="RateStateSlipFHSlipWeakeningVw"):
     """
     Constructor.
     """
@@ -94,7 +94,7 @@ class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSli
     """
     try:
       FrictionModel._configure(self)
-      ModuleRateStateAgeingFHSlipWeakeningVw.linearSlipRate(self, self.inventory.linearSlipRate)
+      ModuleRateStateSlipFHSlipWeakeningVw.linearSlipRate(self, self.inventory.linearSlipRate)
     except ValueError, err:
       aliases = ", ".join(self.aliases)
       raise ValueError("Error while configuring friction model "
@@ -106,7 +106,7 @@ class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSli
     """
     Call constructor for module object for access to C++ object.
     """
-    ModuleRateStateAgeingFHSlipWeakeningVw.__init__(self)
+    ModuleRateStateSlipFHSlipWeakeningVw.__init__(self)
     return
   
 
@@ -114,9 +114,9 @@ class RateStateAgeingFHSlipWeakeningVw(FrictionModel, ModuleRateStateAgeingFHSli
 
 def friction_model():
   """
-  Factory associated with RateStateAgeingFHSlipWeakeningVw.
+  Factory associated with RateStateSlipFHSlipWeakeningVw.
   """
-  return RateStateAgeingFHSlipWeakeningVw()
+  return RateStateSlipFHSlipWeakeningVw()
 
 
 # End of file 

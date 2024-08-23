@@ -33,6 +33,7 @@ subpkginclude_HEADERS = \
 	RateStateAgeingVaryingBFH.hh \
 	RateStateAgeingVaryingBSWFH.hh \
 	RateStateSlippingFH.hh \
+	RateStateSlipFHSlipWeakeningVw.hh \
 	RegularizedRateStateAgeingFH.hh \
 	RegularizedRateStateSlippingFH.hh \
 	TimeWeakening.hh \

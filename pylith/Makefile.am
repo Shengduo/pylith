@@ -75,6 +75,7 @@ nobase_pkgpyexec_PYTHON = \
 	friction/RateStateAgeingFH.py \
 	friction/RateStateAgeingFHSlipWeakening.py \
 	friction/RateStateAgeingFHSlipWeakeningVw.py \
+	friction/RateStateSlipFHSlipWeakeningVw.py \
 	friction/RateStateAgeingVaryingBFH.py \
 	friction/RateStateAgeingVaryingBSWFH.py \
 	friction/RateStateSlippingFH.py \

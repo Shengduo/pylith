@@ -16,55 +16,42 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file libsrc/friction/RateStateAgeingFHSlipWeakeningVw.hh
+/** @file libsrc/friction/SlipWeakeningFH.hh
  *
- * @brief C++ Rate and State fault constitutive model with ageing law and flash heating.
- *
- * Implementation of evolving state variable comes from "Kaneko, Y.,
- * N. Lapusta, and J.-P. Ampuero (2008), Spectral element modeling of
- * spontaneous earthquake rupture on rate and state faults: Effect of
- * velocity-strengthening friction at shallow depths,
- * J. Geophys. Res., 113, B09317"
- *
- * Regularized Rate & State equation : Eqn(15) of Kaneko et. al. (2008)
- *
- * Ageing Law : Eqn (19), of Kaneko et. al. (2008) added separate expression
- * if (slipRate * dt / L) < = 0.00001 by using Taylor series expansion of
- * exp(slipRate * dt / L) for the term (1 - exp(slipRate * dt / L))
+ * @brief C++ slip weakening fault constitutive model.
  */
 
-#if !defined(pylith_friction_ratestateageingfhslipweakeningvw_hh)
-#define pylith_friction_ratestateageingfhslipweakeningvw_hh
+#if !defined(pylith_friction_slipWeakeningfh_hh)
+#define pylith_friction_slipWeakeningfh_hh
 
 // Include directives ---------------------------------------------------
 #include "FrictionModel.hh" // ISA FrictionModel
 
-// RateStateAgeingFHSlipWeakeningVw -------------------------------------------------------
-/** @brief C++ Rate and State fault constitutive model with ageing law.
+// SlipWeakeningFH -------------------------------------------------------
+/** @brief C++ slip weakening fault constitutive model.
  *
  * Friction is equal to the product of a coefficient of friction (function
- * of slip rate and state variable) and the normal traction.
+ * of slip path length) and the normal traction.
  */
 
-class pylith::friction::RateStateAgeingFHSlipWeakeningVw : public FrictionModel
-{ // class RateStateAgeingFHSlipWeakeningVw
-  friend class TestRateStateAgeingFHSlipWeakeningVw; // unit testing
+class pylith::friction::SlipWeakeningFH : public FrictionModel
+{ // class SlipWeakeningFH
+  friend class TestSlipWeakeningFH; // unit testing
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
 public :
 
   /// Default constructor.
-  RateStateAgeingFHSlipWeakeningVw(void);
+  SlipWeakeningFH(void);
 
   /// Destructor.
-  ~RateStateAgeingFHSlipWeakeningVw(void);
+  ~SlipWeakeningFH(void);
 
-  /** Set nondimensional slip rate below which friction varies
-   *  linearly with slip rate.
+  /** Compute properties from values in spatial database.
    *
-   * @param value Nondimensional slip rate.
+   * @param flag True if forcing healing, false otherwise.
    */
-  void linearSlipRate(const PylithScalar value);
+  void forceHealing(const bool flag);
 
   // PROTECTED METHODS //////////////////////////////////////////////////
 protected :
@@ -134,8 +121,6 @@ protected :
    * @param numProperties Number of properties.
    * @param stateVars State variables at location.
    * @param numStateVars Number of state variables.
-   *
-   * @returns Friction (magnitude of shear traction) at vertex.
    */
   PylithScalar _calcFriction(const PylithScalar t,
 			     const PylithScalar slip,
@@ -145,7 +130,7 @@ protected :
 			     const int numProperties,
 			     const PylithScalar* stateVars,
 			     const int numStateVars);
-
+  
   /** Compute derivative of friction with slip from properties and
    * state variables.
    *
@@ -192,50 +177,39 @@ protected :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 private :
 
-  /// Floor for slip rate used in friction calculation.
-  PylithScalar _linearSlipRate;
-
   /// Indices for properties in section and spatial database.
-  static const int p_coef;
-  static const int p_slipRate0;
-  static const int p_L;
-  static const int p_a;
-  static const int p_b;
+  static const int p_coefS;
+  static const int p_coefD;
+  static const int p_d0;
   static const int p_cohesion;
-  static const int p_fwcoef;
-  static const int p_fwSlipRate;
-  static const int p_initSlipHoldL;
-  static const int p_dynVw;
-  static const int p_slipL;
-  static const int p_slipHoldL;
+  static const int p_fw;
+  static const int p_Vw;
 
-  static const int db_coef;
-  static const int db_slipRate0;
-  static const int db_L;
-  static const int db_a;
-  static const int db_b;
+  static const int db_coefS;
+  static const int db_coefD;
+  static const int db_d0;
   static const int db_cohesion;
-  static const int db_fwcoef;
-  static const int db_fwSlipRate;
-  static const int db_initSlipHoldL;
-  static const int db_dynVw;
-  static const int db_slipL;
-  static const int db_slipHoldL;
-
+  static const int db_fw;
+  static const int db_Vw;
+  
   /// Indices for state variables in section and spatial database.
-  static const int s_state;
+  static const int s_slipCum;
+  static const int s_slipPrev;
 
-  static const int db_state;
+  static const int db_slipCum;
+  static const int db_slipPrev;
+
+  bool _forceHealing; ///< Force healing.
 
   // NOT IMPLEMENTED ////////////////////////////////////////////////////
 private :
 
-  RateStateAgeingFHSlipWeakeningVw(const RateStateAgeingFHSlipWeakeningVw&); ///< Not implemented.
-  const RateStateAgeingFHSlipWeakeningVw& operator=(const RateStateAgeingFHSlipWeakeningVw&); ///< Not implemented
+  SlipWeakeningFH(const SlipWeakeningFH&); ///< Not implemented.
+  const SlipWeakeningFH& operator=(const SlipWeakeningFH&); ///< Not implemented
 
-}; // class RateStateAgeingFHSlipWeakeningVw
+}; // class SlipWeakeningFH
 
-#endif // pylith_friction_ratestateageingFH_hh
+#endif // pylith_friction_SlipWeakeningFH_hh
 
 
 // End of file 

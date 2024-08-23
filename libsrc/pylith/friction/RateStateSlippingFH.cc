@@ -172,12 +172,12 @@ pylith::friction::RateStateSlippingFH::_dbToProperties(PylithScalar* const propV
 
   const PylithScalar frictionCoef = dbValues[db_coef];
   const PylithScalar slipRate0 = dbValues[db_slipRate0];
-  const PylithScalar dc = dbValues[db_L];
+  const PylithScalar L = dbValues[db_L];
   const PylithScalar a = dbValues[db_a];
   const PylithScalar b = dbValues[db_b];
   const PylithScalar cohesion = dbValues[db_cohesion];
-  const PylithScalar FHfrictionCoef = dbValues[db_fwcoef];
-  const PylithScalar FHSlipRate = dbValues[db_fwSlipRate];
+  const PylithScalar fw = dbValues[db_fwcoef];
+  const PylithScalar fwSlipRate = dbValues[db_fwSlipRate];
   if (frictionCoef < 0.0) {
     std::ostringstream msg;
     msg << "Spatial database returned negative value for reference coefficient "
@@ -186,11 +186,11 @@ pylith::friction::RateStateSlippingFH::_dbToProperties(PylithScalar* const propV
     throw std::runtime_error(msg.str());
   } // if
 
-  if (dc <= 0.0) {
+  if (L <= 0.0) {
     std::ostringstream msg;
     msg << "Spatial database returned nonpositive value for characteristic"
 	<< "slip distance of Rate and State friction Ageing Law.\n"
-	<< "characteristic slip distance: " << dc << "\n";
+	<< "characteristic slip distance: " << L << "\n";
     throw std::runtime_error(msg.str());
   } // if
 
@@ -210,22 +210,22 @@ pylith::friction::RateStateSlippingFH::_dbToProperties(PylithScalar* const propV
     throw std::runtime_error(msg.str());
   } // if
 
-  if (FHfrictionCoef <= 0.0) {
+  if (fw <= 0.0) {
     std::ostringstream msg;
     msg << "Spatial database returned nonpositive value for constitutive "
   << "parameter 'flash heating friction coefficient' of Rate and State friction Ageing Law.\n"
-  << "Flash heating friction coefficient 'fw' of Ageing Law of friction: " << FHfrictionCoef << "\n";
+  << "Flash heating friction coefficient 'fw' of Ageing Law of friction: " << fw << "\n";
     throw std::runtime_error(msg.str());
   } // if
 
   propValues[p_coef] = frictionCoef;
   propValues[p_slipRate0] = slipRate0;
-  propValues[p_L] = dc;
+  propValues[p_L] = L;
   propValues[p_a] = a;
   propValues[p_b] = b;
   propValues[p_cohesion] = cohesion;
-  propValues[p_fwcoef] = FHfrictionCoef;
-  propValues[p_fwSlipRate] = FHSlipRate;
+  propValues[p_fwcoef] = fw;
+  propValues[p_fwSlipRate] = fwSlipRate;
 
 } // _dbToProperties
 
@@ -460,17 +460,17 @@ pylith::friction::RateStateSlippingFH::_updateStateVars(const PylithScalar t,
   PylithScalar thetaTpdtVertex = 0.0;
   
   // Use slip law
-  // thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
+  thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
   
-  if (vDtL > 1.0e-20) {
-    //thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
-    thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
-    PetscLogFlops(7);
-  } else {
-    // thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
-    thetaTpdtVertex = pow(thetaTVertex, expTerm);
-    PetscLogFlops(9);
-  } // if/else
+  // if (vDtL > 1.0e-20) {
+  //   //thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
+  //   thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
+  //   PetscLogFlops(7);
+  // } else {
+  //   // thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
+  //   thetaTpdtVertex = pow(thetaTVertex, expTerm);
+  //   PetscLogFlops(9);
+  // } // if/else
   
   stateVars[s_state] = thetaTpdtVertex;
 

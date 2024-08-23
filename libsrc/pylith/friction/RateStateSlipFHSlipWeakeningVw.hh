@@ -16,7 +16,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file libsrc/friction/RateStateAgeingFHSlipWeakeningVw.hh
+/** @file libsrc/friction/RateStateSlipFHSlipWeakeningVw.hh
  *
  * @brief C++ Rate and State fault constitutive model with ageing law and flash heating.
  *
@@ -33,31 +33,31 @@
  * exp(slipRate * dt / L) for the term (1 - exp(slipRate * dt / L))
  */
 
-#if !defined(pylith_friction_ratestateageingfhslipweakeningvw_hh)
-#define pylith_friction_ratestateageingfhslipweakeningvw_hh
+#if !defined(pylith_friction_ratestateslipfhslipweakeningvw_hh)
+#define pylith_friction_ratestateslipfhslipweakeningvw_hh
 
 // Include directives ---------------------------------------------------
 #include "FrictionModel.hh" // ISA FrictionModel
 
-// RateStateAgeingFHSlipWeakeningVw -------------------------------------------------------
+// RateStateSlipFHSlipWeakeningVw -------------------------------------------------------
 /** @brief C++ Rate and State fault constitutive model with ageing law.
  *
  * Friction is equal to the product of a coefficient of friction (function
  * of slip rate and state variable) and the normal traction.
  */
 
-class pylith::friction::RateStateAgeingFHSlipWeakeningVw : public FrictionModel
-{ // class RateStateAgeingFHSlipWeakeningVw
-  friend class TestRateStateAgeingFHSlipWeakeningVw; // unit testing
+class pylith::friction::RateStateSlipFHSlipWeakeningVw : public FrictionModel
+{ // class RateStateSlipFHSlipWeakeningVw
+  friend class TestRateStateSlipFHSlipWeakeningVw; // unit testing
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
 public :
 
   /// Default constructor.
-  RateStateAgeingFHSlipWeakeningVw(void);
+  RateStateSlipFHSlipWeakeningVw(void);
 
   /// Destructor.
-  ~RateStateAgeingFHSlipWeakeningVw(void);
+  ~RateStateSlipFHSlipWeakeningVw(void);
 
   /** Set nondimensional slip rate below which friction varies
    *  linearly with slip rate.
@@ -230,10 +230,10 @@ private :
   // NOT IMPLEMENTED ////////////////////////////////////////////////////
 private :
 
-  RateStateAgeingFHSlipWeakeningVw(const RateStateAgeingFHSlipWeakeningVw&); ///< Not implemented.
-  const RateStateAgeingFHSlipWeakeningVw& operator=(const RateStateAgeingFHSlipWeakeningVw&); ///< Not implemented
+  RateStateSlipFHSlipWeakeningVw(const RateStateSlipFHSlipWeakeningVw&); ///< Not implemented.
+  const RateStateSlipFHSlipWeakeningVw& operator=(const RateStateSlipFHSlipWeakeningVw&); ///< Not implemented
 
-}; // class RateStateAgeingFHSlipWeakeningVw
+}; // class RateStateSlipFHSlipWeakeningVw
 
 #endif // pylith_friction_ratestateageingFH_hh
 

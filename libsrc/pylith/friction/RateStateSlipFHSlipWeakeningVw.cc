@@ -18,7 +18,7 @@
 
 #include <portinfo>
 
-#include "RateStateAgeingFHSlipWeakeningVw.hh" // implementation of object methods
+#include "RateStateSlipFHSlipWeakeningVw.hh" // implementation of object methods
 
 #include "pylith/materials/Metadata.hh" // USES Metadata
 
@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------
 namespace pylith {
   namespace friction {
-    namespace _RateStateAgeingFHSlipWeakeningVw {
+    namespace _RateStateSlipFHSlipWeakeningVw {
 
       // Number of physical properties.
       const int numProperties = 12;
@@ -87,84 +87,84 @@ namespace pylith {
 	"state-variable",
       };
       
-    } // _RateStateAgeingFHSlipWeakeningVw
+    } // _RateStateSlipFHSlipWeakeningVw
   } // friction
 } // pylith
 
 // Indices of physical properties
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_coef = 0;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_slipRate0 = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_coef + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_L = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_slipRate0 + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_a = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_L + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_b = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_a + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_cohesion =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_b + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_fwcoef =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_cohesion + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_fwSlipRate =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_fwcoef + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_initSlipHoldL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_fwSlipRate + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_dynVw =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_initSlipHoldL + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_slipL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_dynVw + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_slipHoldL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::p_slipL + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_coef = 0;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_slipRate0 = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_coef + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_L = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_slipRate0 + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_a = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_L + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_b = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_a + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_cohesion =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_b + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_fwcoef =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_cohesion + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_fwSlipRate =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_fwcoef + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_initSlipHoldL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_fwSlipRate + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_dynVw =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_initSlipHoldL + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_slipL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_dynVw + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::p_slipHoldL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::p_slipL + 1;
 
 // Indices of database values (order must match dbProperties)
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_coef = 0;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_slipRate0 = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_coef + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_L = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_slipRate0 + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_a = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_L + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_b = 
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_a + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_cohesion =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_b + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_fwcoef =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_cohesion + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_fwSlipRate =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_fwcoef + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_initSlipHoldL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_fwSlipRate + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_dynVw =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_initSlipHoldL + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_slipL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_dynVw + 1;
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_slipHoldL =
-  pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_slipL + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_coef = 0;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_slipRate0 = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_coef + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_L = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_slipRate0 + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_a = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_L + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_b = 
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_a + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_cohesion =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_b + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_fwcoef =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_cohesion + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_fwSlipRate =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_fwcoef + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_initSlipHoldL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_fwSlipRate + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_dynVw =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_initSlipHoldL + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_slipL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_dynVw + 1;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_slipHoldL =
+  pylith::friction::RateStateSlipFHSlipWeakeningVw::db_slipL + 1;
 
 // Indices of state variables.
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::s_state = 0;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::s_state = 0;
 
 // Indices of database values (order must match dbProperties)
-const int pylith::friction::RateStateAgeingFHSlipWeakeningVw::db_state = 0;
+const int pylith::friction::RateStateSlipFHSlipWeakeningVw::db_state = 0;
 
 // ----------------------------------------------------------------------
 // Default constructor.
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::RateStateAgeingFHSlipWeakeningVw(void) :
-  FrictionModel(materials::Metadata(_RateStateAgeingFHSlipWeakeningVw::properties,
-				    _RateStateAgeingFHSlipWeakeningVw::numProperties,
-				    _RateStateAgeingFHSlipWeakeningVw::dbProperties,
-				    _RateStateAgeingFHSlipWeakeningVw::numDBProperties,
-				    _RateStateAgeingFHSlipWeakeningVw::stateVars,
-				    _RateStateAgeingFHSlipWeakeningVw::numStateVars,
-				    _RateStateAgeingFHSlipWeakeningVw::dbStateVars,
-				    _RateStateAgeingFHSlipWeakeningVw::numDBStateVars)),
+pylith::friction::RateStateSlipFHSlipWeakeningVw::RateStateSlipFHSlipWeakeningVw(void) :
+  FrictionModel(materials::Metadata(_RateStateSlipFHSlipWeakeningVw::properties,
+				    _RateStateSlipFHSlipWeakeningVw::numProperties,
+				    _RateStateSlipFHSlipWeakeningVw::dbProperties,
+				    _RateStateSlipFHSlipWeakeningVw::numDBProperties,
+				    _RateStateSlipFHSlipWeakeningVw::stateVars,
+				    _RateStateSlipFHSlipWeakeningVw::numStateVars,
+				    _RateStateSlipFHSlipWeakeningVw::dbStateVars,
+				    _RateStateSlipFHSlipWeakeningVw::numDBStateVars)),
   _linearSlipRate(1.0e-12)
 { // constructor
 } // constructor
 
 // ----------------------------------------------------------------------
 // Destructor.
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::~RateStateAgeingFHSlipWeakeningVw(void)
+pylith::friction::RateStateSlipFHSlipWeakeningVw::~RateStateSlipFHSlipWeakeningVw(void)
 { // destructor
 } // destructor
 
@@ -172,7 +172,7 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::~RateStateAgeingFHSlipWeaken
 // Set nondimensional slip rate below which friction varies
 //  linearly with slip rate.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::linearSlipRate(const PylithScalar value)
+pylith::friction::RateStateSlipFHSlipWeakeningVw::linearSlipRate(const PylithScalar value)
 { // linearSlipRate
   if (value < 0.0) {
     std::ostringstream msg;
@@ -187,12 +187,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::linearSlipRate(const PylithS
 // ----------------------------------------------------------------------
 // Compute properties from values in spatial database.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dbToProperties(PylithScalar* const propValues,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_dbToProperties(PylithScalar* const propValues,
 						   const scalar_array& dbValues) const
 { // _dbToProperties
   assert(propValues);
   const int numDBValues = dbValues.size();
-  assert(_RateStateAgeingFHSlipWeakeningVw::numDBProperties == numDBValues);
+  assert(_RateStateSlipFHSlipWeakeningVw::numDBProperties == numDBValues);
 
   const PylithScalar frictionCoef = dbValues[db_coef];
   const PylithScalar slipRate0 = dbValues[db_slipRate0];
@@ -265,12 +265,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dbToProperties(PylithScalar
 // ----------------------------------------------------------------------
 // Nondimensionalize properties.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_nondimProperties(PylithScalar* const values,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_nondimProperties(PylithScalar* const values,
 						    const int nvalues) const
 { // _nondimProperties
   assert(_normalizer);
   assert(values);
-  assert(nvalues == _RateStateAgeingFHSlipWeakeningVw::numProperties);
+  assert(nvalues == _RateStateSlipFHSlipWeakeningVw::numProperties);
 
   const PylithScalar lengthScale = _normalizer->lengthScale();
   const PylithScalar timeScale = _normalizer->timeScale();
@@ -290,12 +290,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_nondimProperties(PylithScal
 // ----------------------------------------------------------------------
 // Dimensionalize properties.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dimProperties(PylithScalar* const values,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_dimProperties(PylithScalar* const values,
 						  const int nvalues) const
 { // _dimProperties
   assert(_normalizer);
   assert(values);
-  assert(nvalues == _RateStateAgeingFHSlipWeakeningVw::numProperties);
+  assert(nvalues == _RateStateSlipFHSlipWeakeningVw::numProperties);
 
   const PylithScalar lengthScale = _normalizer->lengthScale();
   const PylithScalar timeScale = _normalizer->timeScale();
@@ -315,12 +315,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dimProperties(PylithScalar*
 // ----------------------------------------------------------------------
 // Compute state variables from values in spatial database.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dbToStateVars(PylithScalar* const stateValues,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_dbToStateVars(PylithScalar* const stateValues,
 						  const scalar_array& dbValues) const
 { // _dbToStateVars
   assert(stateValues);
   const int numDBValues = dbValues.size();
-  assert(_RateStateAgeingFHSlipWeakeningVw::numDBStateVars == numDBValues);
+  assert(_RateStateSlipFHSlipWeakeningVw::numDBStateVars == numDBValues);
 
   stateValues[s_state] = dbValues[db_state];
 } // _dbToStateVars
@@ -328,12 +328,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dbToStateVars(PylithScalar*
 // ----------------------------------------------------------------------
 // Nondimensionalize state variables.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_nondimStateVars(PylithScalar* const values,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_nondimStateVars(PylithScalar* const values,
 						    const int nvalues) const
 { // _nondimStateVars
   assert(_normalizer);
   assert(values);
-  assert(nvalues == _RateStateAgeingFHSlipWeakeningVw::numStateVars);
+  assert(nvalues == _RateStateSlipFHSlipWeakeningVw::numStateVars);
 
   const PylithScalar timeScale = _normalizer->timeScale();
 
@@ -343,12 +343,12 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_nondimStateVars(PylithScala
 // ----------------------------------------------------------------------
 // Dimensionalize state variables.
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dimStateVars(PylithScalar* const values,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_dimStateVars(PylithScalar* const values,
 						 const int nvalues) const
 { // _dimStateVars
   assert(_normalizer);
   assert(values);
-  assert(nvalues == _RateStateAgeingFHSlipWeakeningVw::numStateVars);
+  assert(nvalues == _RateStateSlipFHSlipWeakeningVw::numStateVars);
 
   const PylithScalar timeScale = _normalizer->timeScale();
 
@@ -358,7 +358,7 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_dimStateVars(PylithScalar* 
 // ----------------------------------------------------------------------
 // Compute friction from properties and state variables.
 PylithScalar
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFriction(const PylithScalar t,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_calcFriction(const PylithScalar t,
 						 const PylithScalar slip,
 						 const PylithScalar slipRate,
 						 const PylithScalar normalTraction,
@@ -368,9 +368,9 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFriction(const PylithSc
 						 const int numStateVars)
 { // _calcFriction
   assert(properties);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numProperties == numProperties);
+  assert(_RateStateSlipFHSlipWeakeningVw::numProperties == numProperties);
   assert(numStateVars);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numStateVars == numStateVars);
+  assert(_RateStateSlipFHSlipWeakeningVw::numStateVars == numStateVars);
 
   PylithScalar friction = 0.0;
   PylithScalar mu_f = 0.0;
@@ -433,7 +433,7 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFriction(const PylithSc
 // Compute derivative of friction with slip from properties and
 // state variables.
 PylithScalar
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFrictionDeriv(const PylithScalar t,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_calcFrictionDeriv(const PylithScalar t,
 						      const PylithScalar slip,
 						      const PylithScalar slipRate,
 						      const PylithScalar normalTraction,
@@ -443,9 +443,9 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFrictionDeriv(const Pyl
 						      const int numStateVars)
 { // _calcFrictionDeriv
   assert(properties);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numProperties == numProperties);
+  assert(_RateStateSlipFHSlipWeakeningVw::numProperties == numProperties);
   assert(numStateVars);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numStateVars == numStateVars);
+  assert(_RateStateSlipFHSlipWeakeningVw::numStateVars == numStateVars);
 
   PylithScalar frictionDeriv = 0.0;
   if (normalTraction <= 0.0) {
@@ -513,7 +513,7 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_calcFrictionDeriv(const Pyl
 // ----------------------------------------------------------------------
 // Update state variables (for next time step).
 void
-pylith::friction::RateStateAgeingFHSlipWeakeningVw::_updateStateVars(const PylithScalar t,
+pylith::friction::RateStateSlipFHSlipWeakeningVw::_updateStateVars(const PylithScalar t,
 						    const PylithScalar slip,
 						    const PylithScalar slipRate,
 						    const PylithScalar normalTraction,
@@ -523,9 +523,9 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_updateStateVars(const Pylit
 						    const int numProperties)
 { // _updateStateVars
   assert(properties);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numProperties == numProperties);
+  assert(_RateStateSlipFHSlipWeakeningVw::numProperties == numProperties);
   assert(numStateVars);
-  assert(_RateStateAgeingFHSlipWeakeningVw::numStateVars == numStateVars);
+  assert(_RateStateSlipFHSlipWeakeningVw::numStateVars == numStateVars);
 
   // d(theta)/dt = (1 - slipRate * theta / L)
   //
@@ -553,13 +553,19 @@ pylith::friction::RateStateAgeingFHSlipWeakeningVw::_updateStateVars(const Pylit
   const PylithScalar expTerm = exp(-vDtL);
 
   PylithScalar thetaTpdtVertex = 0.0;
-  if (vDtL > 1.0e-20) {
-    thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
-    PetscLogFlops(7);
-  } else {
-    thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
-    PetscLogFlops(9);
-  } // if/else
+  
+  // Use slip law
+  thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
+  
+  // if (vDtL > 1.0e-20) {
+  //   //thetaTpdtVertex = thetaTVertex * expTerm + L / slipRate * (1 - expTerm);
+  //   thetaTpdtVertex = L / slipRate * pow(slipRate * thetaTVertex / L, expTerm);
+  //   PetscLogFlops(7);
+  // } else {
+  //   // thetaTpdtVertex = thetaTVertex * expTerm + dt - 0.5 * slipRate/L * dt*dt;
+  //   thetaTpdtVertex = pow(thetaTVertex, expTerm);
+  //   PetscLogFlops(9);
+  // } // if/else
   
   stateVars[s_state] = thetaTpdtVertex;
 
